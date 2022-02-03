@@ -1,6 +1,7 @@
 package src.game;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 import java.io.File;
@@ -22,30 +23,31 @@ public class Game {
 
     private void findNewWord() {
         loadWords();
+        sort(wordListAnswer);
+        sort(possibleWord);
+        wordToFind = wordListAnswer[rng.nextInt(wordListAnswer.length)];
     }
 
     private void loadWords() {
         ArrayList<String> loadedWordList = loadFile("src/resources/common.txt");
         wordListAnswer = loadedWordList.toArray(new String[loadedWordList.size()]);
-        sort(wordListAnswer);
         ArrayList<String> loadedPossibleWord = loadFile("src/resources/words.txt");
         possibleWord = loadedPossibleWord.toArray(new String[loadedPossibleWord.size()]);
-        sort(possibleWord);
     }
 
     private ArrayList<String> loadFile(String path) {
-        ArrayList<String> datas = new ArrayList<String>();
+        ArrayList<String> data = new ArrayList<String>();
         try {
             File file = new File(path);
             Scanner scanner = new Scanner(file);
             while (scanner.hasNextLine()) {
-                datas.add(scanner.nextLine());
+                data.add(scanner.nextLine());
             }
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred");
             e.printStackTrace();
         }
-        return datas;
+        return data;
     }
 
     private void getRandom() {
@@ -57,22 +59,31 @@ public class Game {
     }
 
     private void sort(String[] arr) {
-        // TODO
+        Arrays.sort(arr);
     }
 
     public boolean isValidWord(String str) {
-        // TODO
-        // Search in wordListAnswer and possibleWord
+        // Search in wordListAnswer and possibleWord (binarySearch)
+        if (wordListAnswer[Arrays.binarySearch(wordListAnswer, str)] != str) {
+            return possibleWord[Arrays.binarySearch(possibleWord, str)] == str;
+        }
         return true;
     }
 
-    public void correctLetters(String str) {
-        // TODO
+    public char[] correctLetters(String str) {
+        char[] correct = new char[wordToFind.length()];
+        for (int i = 0; i < str.length(); i++) {
+            for (int j = 0; j < wordToFind.length(); j++) {
+                if (str.charAt(i) == wordToFind.charAt(j)) {
+                    correct[i] = str.charAt(i);
+                    break;
+                }
+            }
+        }
+        return correct;
     }
 
     public boolean isCorrectWord(String str) {
-        // TODO
-        // Search in possibleWord
-        return true;
+        return str == wordToFind;
     }
 }
