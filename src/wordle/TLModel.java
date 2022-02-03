@@ -1,12 +1,17 @@
-package wordle;
+package src.wordle;
 
-import keyboard.Keyboard;
+import src.keyboard.Keyboard;
 
 import java.util.Observable;
+import java.util.Random;
 
 public class TLModel extends Observable {
 
     private Keyboard keyboard;
+
+    private Random rng;
+    private String wordToFind;
+    private long seed;
 
     public Keyboard getKeyboard() { return keyboard; }
 
@@ -18,5 +23,14 @@ public class TLModel extends Observable {
 
     public TLModel() {
         initialise();
+    }
+
+    private void SelectWord() {
+        // TODO
+        if (seed == null) {
+            rng = new Random();
+        } else {
+            rng = new Random(seed);
+        }
     }
 }

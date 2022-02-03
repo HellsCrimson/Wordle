@@ -1,8 +1,7 @@
-package wordle;
+package src.wordle;
 
-import keyboard.Keyboard;
+import src.keyboard.Keyboard;
 
-import java.util.Arrays;
 import java.util.Observer;
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +14,9 @@ public class TLView implements Observer {
     private final TLModel model;
     private final TLController controller;
     private JFrame frame;
-    private JPanel panel;
+    private JPanel panelDisplay;
+    private JPanel panelKeyboard10; // 10 keys row
+    private JPanel panelKeyboard9; // 9 keys row
 
     private final JTextField letterArea[][] = new JTextField[6][5];
     private JButton keyboard[][];
@@ -35,9 +36,12 @@ public class TLView implements Observer {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         Container contentPane = frame.getContentPane();
-        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.X_AXIS));
+        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
         createPanel();
-        contentPane.add(panel);
+        contentPane.add(panelDisplay);
+        createKeyboard();
+        contentPane.add(panelKeyboard10);
+        contentPane.add(panelKeyboard9);
 
 
         frame.pack();
@@ -51,16 +55,12 @@ public class TLView implements Observer {
     }
 
     private void createPanel() {
-        panel = new JPanel();
-        panel.setLayout(new GridLayout(0,5));
+        panelDisplay = new JPanel();
+        panelDisplay.setLayout(new GridLayout(0,5));
 
         createGrid();
-        createKeyboard();
 
-        //testKeyQ.addActionListener((ActionEvent e) -> {controller.keyPressed();});
-        //panel.add(testKeyQ);
-
-        panel.setPreferredSize(PANEL_SIZE);
+        panelDisplay.setPreferredSize(PANEL_SIZE);
     }
 
     private void createGrid() {
@@ -68,20 +68,33 @@ public class TLView implements Observer {
             for (int x = 0; x < letterArea[y].length; x++) {
                 letterArea[y][x] = new JTextField("");
                 letterArea[y][x].setEditable(false);
-                panel.add(letterArea[y][x]);
+                panelDisplay.add(letterArea[y][x]);
             }
         }
     }
 
     private void createKeyboard() {
+        panelKeyboard10 = new JPanel();
+        panelKeyboard10.setLayout(new GridLayout(0,10));
+        panelKeyboard9 = new JPanel();
+        panelKeyboard9.setLayout(new GridLayout(0,9));
+
         Keyboard kb = model.getKeyboard();
         keyboard = new JButton[kb.getKeys().length][kb.getMaxRowKeys()];
         for (int y = 0; y < keyboard.length; y++) {
             for (int x = 0; x < keyboard[y].length; x++) {
                 if (kb.getKeys()[y][x] != null) {
                     keyboard[y][x] = new JButton(kb.getKeys()[y][x].getLetter());
-                    keyboard[y][x].addActionListener((ActionEvent e) -> {}); //TODO
-                    panel.add(keyboard[y][x]);
+                    int finalY = y;
+                    int finalX = x;
+                    keyboard[y][x].addActionListener((ActionEvent e) -> {
+                        controller.keyPressed(kb.getKeys()[finalY][finalX]);
+                    });
+                    if (y == 0) {
+                        panelKeyboard10.add(keyboard[y][x]);
+                    } else {
+                        panelKeyboard9.add(keyboard[y][x]);
+                    }
                 }
             }
         }

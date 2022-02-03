@@ -1,4 +1,4 @@
-package keyboard;
+package src.keyboard;
 
 public class Key {
 

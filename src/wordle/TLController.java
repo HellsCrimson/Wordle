@@ -1,4 +1,6 @@
-package wordle;
+package src.wordle;
+
+import src.keyboard.Key;
 
 public class TLController {
 
@@ -13,8 +15,9 @@ public class TLController {
         this.view = view;
     }
 
-    public void keyPressed() { //TODO
-        model.getKeyboard().KeyPreesed();
+    public void keyPressed(Key key) {
+        //TODO
+        model.getKeyboard().KeyPressed(key);
     }
 
     public void initialise() {

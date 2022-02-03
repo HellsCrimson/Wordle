@@ -1,4 +1,4 @@
-package keyboard;
+package src.keyboard;
 
 public class Keyboard {
 
@@ -39,8 +39,9 @@ public class Keyboard {
         return max;
     }
 
-    public void KeyPreesed() {
-        keys[0][0].changeState(States.RIGHT); // TODO
+    public void KeyPressed(Key key) {
+        key.changeState(States.RIGHT); // TODO
+        // check what is new state
     }
 
     public Keyboard() {

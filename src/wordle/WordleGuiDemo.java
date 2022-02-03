@@ -1,4 +1,4 @@
-package wordle;
+package src.wordle;
 
 public class WordleGuiDemo {
     public static void main(String[] args) {
