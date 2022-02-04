@@ -1,5 +1,9 @@
 package src.keyboard;
 
+import src.game.Game;
+
+import java.util.Objects;
+
 public class Keyboard {
 
     private Key[][] keys;
@@ -39,9 +43,72 @@ public class Keyboard {
         return max;
     }
 
-    public void KeyPressed(Key key) {
-        key.changeState(States.RIGHT); // TODO
-        // check what is new state
+    public void KeyPressed(Key key, Game game) {
+        if (Objects.equals(key.getLetter(), "ENTER")) {
+            String userword = game.getCurrentUserWord();
+            if (userword.length() == 5) {
+                if (game.isValidWord(userword)) {
+                    if (game.indexBuffer < 6)
+                        game.indexBuffer += 1;
+
+                    if (game.isCorrectWord(userword)) {
+                        // TODO You won
+                        game.setCurrentUserWord("");
+                        System.out.println("You won");
+                    } else {
+                        String[] correctLetters = game.correctLetters(userword);
+                        for (String correctLetter : correctLetters) {
+                            changeKeyState(correctLetter, States.WRONG_PLACE);
+                        }
+                        correctLetters = game.correctPlaceLetters(userword);
+                        for (String correctLetter : correctLetters) {
+                            changeKeyState(correctLetter, States.RIGHT);
+                        }
+                        for (int i = 0; i < userword.length(); i++) {
+                            for (Key[] rowKey : keys) {
+                                for (Key currKey : rowKey) {
+                                    if (currKey != null && Objects.equals(currKey.getLetter(), String.valueOf(userword.charAt(i))) && currKey.getState() == States.NOT_USED) {
+                                        changeKeyState(String.valueOf(userword.charAt(i)), States.WRONG);
+                                    }
+                                }
+                            }
+                        }
+                        game.setCurrentUserWord("");
+                    }
+                } else {
+                    // TODO not a valid word
+                    System.out.println("Not a valid word");
+                }
+            } else {
+                // TODO you need to use 5 letters
+                System.out.println("You need to use 5 letters");
+            }
+        } else if (Objects.equals(key.getLetter(), "DELETE")) {
+            String userword = game.getCurrentUserWord();
+            if (userword.length() > 0) {
+                game.setCurrentUserWord(userword.substring(0, userword.length() - 1));
+                game.wordsBuffer[game.indexBuffer] = userword.substring(0, userword.length() - 1);
+            }
+        } else {
+            if (game.getCurrentUserWord().length() < 5) {
+                game.wordsBuffer[game.indexBuffer] = game.getCurrentUserWord() + key.getLetter();
+                game.addLetter(key.getLetter());
+            }
+        }
+    }
+
+    private void changeKeyState(String character, States newState) {
+        if (character == null)
+            return;
+        for (Key[] rowKey : keys) {
+            for (Key key : rowKey) {
+                if (key != null && Objects.equals(key.getLetter(), character)) {
+                    if (key.getState() != States.RIGHT)
+                        key.changeState(newState);
+                    return;
+                }
+            }
+        }
     }
 
     public Keyboard() {

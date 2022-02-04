@@ -17,7 +17,7 @@ public class TLController {
 
     public void keyPressed(Key key) {
         //TODO
-        model.getKeyboard().KeyPressed(key);
+        model.keyPressed(key);
     }
 
     public void initialise() {

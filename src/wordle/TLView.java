@@ -1,5 +1,6 @@
 package src.wordle;
 
+import src.game.Game;
 import src.keyboard.Keyboard;
 
 import java.util.Observer;
@@ -18,16 +19,42 @@ public class TLView implements Observer {
     private JPanel panelKeyboard10; // 10 keys row
     private JPanel panelKeyboard9; // 9 keys row
 
-    private final JTextField letterArea[][] = new JTextField[6][5];
-    private JButton keyboard[][];
+    private final JTextField[][] letterArea = new JTextField[6][5];
+    private int letterXAxis = 0;
+    private int letterYAxis = 0;
+
+    private JButton[][] keyboard;
 
     public TLView(TLModel model, TLController controller)  {
+        // Load the correct look on mac
+        try {
+            UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName() );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         this.model = model;
-        model.addObserver(this);
         this.controller = controller;
         createControls();
         controller.setView(this);
+        model.addObserver(this);
         update(model, null);
+    }
+
+    public int getLetterXAxis() {
+        return letterXAxis;
+    }
+
+    public void setLetterXAxis(int letterXAxis) {
+        this.letterXAxis = letterXAxis;
+    }
+
+    public int getLetterYAxis() {
+        return letterYAxis;
+    }
+
+    public void setLetterYAxis(int letterYAxis) {
+        this.letterYAxis = letterYAxis;
     }
 
     public void createControls()
@@ -51,7 +78,31 @@ public class TLView implements Observer {
 
     @Override
     public void update(java.util.Observable o, Object arg) {
+        updateColorKeyboard();
         frame.repaint();
+    }
+
+    private void updateColorKeyboard() {
+        for (int y = 0; y < keyboard.length; y++) {
+            for (int x = 0; x < model.getKeyboard().getMaxRowKeys(); x++) {
+                if (model.getKeyboard().getKeys()[y][x] != null) {
+                    switch (model.getKeyboard().getKeys()[y][x].getState()) {
+                        case RIGHT:
+                                keyboard[y][x].setBackground(Color.GREEN);
+                                break;
+                        case WRONG:
+                            keyboard[y][x].setBackground(Color.DARK_GRAY);
+                            keyboard[y][x].setEnabled(false);
+                            break;
+                        case WRONG_PLACE:
+                            keyboard[y][x].setBackground(Color.YELLOW);
+                            break;
+                        default:
+                            keyboard[y][x].setBackground(Color.GRAY);
+                    }
+                }
+            }
+        }
     }
 
     private void createPanel() {
@@ -85,17 +136,30 @@ public class TLView implements Observer {
             for (int x = 0; x < keyboard[y].length; x++) {
                 if (kb.getKeys()[y][x] != null) {
                     keyboard[y][x] = new JButton(kb.getKeys()[y][x].getLetter());
+                    keyboard[y][x].setOpaque(true);
                     int finalY = y;
                     int finalX = x;
+
                     keyboard[y][x].addActionListener((ActionEvent e) -> {
                         controller.keyPressed(kb.getKeys()[finalY][finalX]);
+                        displayWords();
                     });
+
                     if (y == 0) {
                         panelKeyboard10.add(keyboard[y][x]);
                     } else {
                         panelKeyboard9.add(keyboard[y][x]);
                     }
                 }
+            }
+        }
+    }
+
+    private void displayWords() {
+        Game game = model.getGame();
+        for (int y = 0; y <= game.indexBuffer; y++) {
+            for (int x = 0; x < game.wordsBuffer[y].length(); x++) {
+                letterArea[y][x].setText(String.valueOf(game.wordsBuffer[y].charAt(x)));
             }
         }
     }

@@ -1,5 +1,8 @@
 package src.keyboard;
 
+import javax.swing.*;
+import java.awt.*;
+
 public class Key {
 
     private final String letter;
@@ -23,10 +26,3 @@ public class Key {
     }
 }
 
-enum States {
-    NOT_USED,
-    USED_WRONG,
-    WRONG_PLACE,
-    RIGHT,
-    SPECIAL;
-}
