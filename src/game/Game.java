@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 
 public class Game {
 
+    private boolean fixedWord = false;
+
     private String[] wordListAnswer;
     private String[] possibleWord;
     private String wordToFind;
@@ -18,13 +20,21 @@ public class Game {
     private long seed = -1;
 
     public Game() {
-        currentUserWord = new String("");
+        currentUserWord = "";
         wordsBuffer = new String[6];
         Arrays.fill(wordsBuffer, "");
         getRandom();
+        seed = rng.nextLong();
         findNewWord();
-        System.out.println(wordToFind); // TODO to delete
     }
+
+    public boolean getFixedWord() { return fixedWord; }
+
+    public void setFixedWord(boolean state) { fixedWord = state; }
+
+    public String getWordToFind() { return wordToFind; }
+
+    public long getSeed() { return seed; }
 
     public String getCurrentUserWord() {
         return currentUserWord;
@@ -38,14 +48,19 @@ public class Game {
         loadWords();
         sort(wordListAnswer);
         sort(possibleWord);
-        wordToFind = wordListAnswer[rng.nextInt(wordListAnswer.length)].toUpperCase();
+        wordToFind = wordListAnswer[rng.nextInt(wordListAnswer.length)];
+    }
+
+    public void changeWordToFind() {
+        if (!fixedWord)
+            wordToFind = wordListAnswer[rng.nextInt(wordListAnswer.length)];
     }
 
     private void loadWords() {
         ArrayList<String> loadedWordList = loadFile("src/resources/common.txt");
-        wordListAnswer = loadedWordList.toArray(new String[loadedWordList.size()]);
+        wordListAnswer = loadedWordList.toArray(new String[0]);
         ArrayList<String> loadedPossibleWord = loadFile("src/resources/words.txt");
-        possibleWord = loadedPossibleWord.toArray(new String[loadedPossibleWord.size()]);
+        possibleWord = loadedPossibleWord.toArray(new String[0]);
     }
 
     private ArrayList<String> loadFile(String path) {
@@ -54,7 +69,7 @@ public class Game {
             File file = new File(path);
             Scanner scanner = new Scanner(file);
             while (scanner.hasNextLine()) {
-                data.add(scanner.nextLine());
+                data.add(scanner.nextLine().toUpperCase());
             }
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred");
@@ -64,11 +79,7 @@ public class Game {
     }
 
     private void getRandom() {
-        if (seed == -1) {
-            rng = new Random();
-        } else {
-            rng = new Random(seed);
-        }
+        rng = new Random();
     }
 
     private void sort(String[] arr) {
@@ -77,10 +88,7 @@ public class Game {
 
     public boolean isValidWord(String str) {
         // Search in wordListAnswer and possibleWord (binarySearch)
-        if (Arrays.binarySearch(wordListAnswer, str) >= 0) {
-            return Arrays.binarySearch(possibleWord, str) >= 0;
-        }
-        return true;
+        return (Arrays.binarySearch(wordListAnswer, str) >= 0) || (Arrays.binarySearch(possibleWord, str) >= 0);
     }
 
     public String[] correctLetters(String str) {
@@ -107,11 +115,15 @@ public class Game {
         return correct;
     }
 
-    public boolean isCorrectWord(String str) {
-        return Objects.equals(str, wordToFind);
-    }
+    public boolean isCorrectWord(String str) { return str.equals(wordToFind); }
 
     public void addLetter(String character) {
         currentUserWord += character;
+    }
+
+    public void resetWordBuffer() {
+        for (String row : wordsBuffer) {
+            row = "";
+        }
     }
 }

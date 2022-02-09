@@ -16,12 +16,17 @@ public class TLModel extends Observable {
     public Game getGame() { return game; }
 
     public void initialise() {
-        keyboard = new Keyboard();
+        keyboard = new Keyboard(this);
         game = new Game();
     }
 
     public void keyPressed(Key key) {
         keyboard.KeyPressed(key, game);
+        setChanged();
+        notifyObservers();
+    }
+
+    public void restartGame() {
         setChanged();
         notifyObservers();
     }

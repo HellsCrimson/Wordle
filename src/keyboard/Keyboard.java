@@ -1,10 +1,20 @@
 package src.keyboard;
 
 import src.game.Game;
+import src.wordle.TLModel;
 
+import javax.swing.*;
 import java.util.Objects;
 
 public class Keyboard {
+
+    private TLModel model;
+
+    public boolean won = false;
+    public boolean needLetter = false;
+    public boolean notValid = false;
+
+    public boolean needBeValid = true;
 
     private Key[][] keys;
     private String keysAvalable[][] = new String[][] {
@@ -45,49 +55,61 @@ public class Keyboard {
 
     public void KeyPressed(Key key, Game game) {
         if (Objects.equals(key.getLetter(), "ENTER")) {
-            String userword = game.getCurrentUserWord();
-            if (userword.length() == 5) {
-                if (game.isValidWord(userword)) {
-                    if (game.indexBuffer < 6)
-                        game.indexBuffer += 1;
-
-                    if (game.isCorrectWord(userword)) {
-                        // TODO You won
+            String userWord = game.getCurrentUserWord();
+            if (userWord.length() == 5) {
+                if (game.isValidWord(userWord) || !needBeValid) {
+                    if (game.isCorrectWord(userWord)) {
+                        // You won
+                        // TODO put all letter in green
                         game.setCurrentUserWord("");
-                        System.out.println("You won");
+                        won = true;
                     } else {
-                        String[] correctLetters = game.correctLetters(userword);
+                        String[] correctLetters = game.correctLetters(userWord);
                         for (String correctLetter : correctLetters) {
                             changeKeyState(correctLetter, States.WRONG_PLACE);
+                            // TODO put correct letter in YELLOW
                         }
-                        correctLetters = game.correctPlaceLetters(userword);
+                        correctLetters = game.correctPlaceLetters(userWord);
                         for (String correctLetter : correctLetters) {
                             changeKeyState(correctLetter, States.RIGHT);
+                            // TODO put correct letter in GREEN
                         }
-                        for (int i = 0; i < userword.length(); i++) {
+                        for (int i = 0; i < userWord.length(); i++) {
                             for (Key[] rowKey : keys) {
                                 for (Key currKey : rowKey) {
-                                    if (currKey != null && Objects.equals(currKey.getLetter(), String.valueOf(userword.charAt(i))) && currKey.getState() == States.NOT_USED) {
-                                        changeKeyState(String.valueOf(userword.charAt(i)), States.WRONG);
+                                    if (currKey != null && Objects.equals(currKey.getLetter(), String.valueOf(userWord.charAt(i))) && currKey.getState() == States.NOT_USED) {
+                                        changeKeyState(String.valueOf(userWord.charAt(i)), States.WRONG);
+                                        // TODO put correct letter in DARK_GREY
                                     }
                                 }
                             }
                         }
                         game.setCurrentUserWord("");
                     }
+
+                    if (game.indexBuffer < 5)
+                        game.indexBuffer += 1;
+                    else {
+                        // TODO lost
+                        game.changeWordToFind();
+                        game.resetWordBuffer();
+                        resetKeyboard();
+                        model.restartGame();
+                        game.indexBuffer = 0;
+                    }
                 } else {
-                    // TODO not a valid word
-                    System.out.println("Not a valid word");
+                    // not a valid word
+                    notValid = true;
                 }
             } else {
-                // TODO you need to use 5 letters
-                System.out.println("You need to use 5 letters");
+                // need to use 5 letters
+                needLetter = true;
             }
-        } else if (Objects.equals(key.getLetter(), "DELETE")) {
-            String userword = game.getCurrentUserWord();
-            if (userword.length() > 0) {
-                game.setCurrentUserWord(userword.substring(0, userword.length() - 1));
-                game.wordsBuffer[game.indexBuffer] = userword.substring(0, userword.length() - 1);
+        } else if (key.getLetter().equals("DELETE")) {
+            String userWord = game.getCurrentUserWord();
+            if (userWord.length() > 0) {
+                game.setCurrentUserWord(userWord.substring(0, userWord.length() - 1));
+                game.wordsBuffer[game.indexBuffer] = game.getCurrentUserWord();
             }
         } else {
             if (game.getCurrentUserWord().length() < 5) {
@@ -102,7 +124,7 @@ public class Keyboard {
             return;
         for (Key[] rowKey : keys) {
             for (Key key : rowKey) {
-                if (key != null && Objects.equals(key.getLetter(), character)) {
+                if (key != null && key.getLetter().equals(character)) {
                     if (key.getState() != States.RIGHT)
                         key.changeState(newState);
                     return;
@@ -111,7 +133,18 @@ public class Keyboard {
         }
     }
 
-    public Keyboard() {
+    private void resetKeyboard() {
+        for (Key[] row : keys) {
+            for (Key key : row) {
+                if (key != null && key.getState() != States.SPECIAL) {
+                    key.changeState(States.NOT_USED);
+                }
+            }
+        }
+    }
+
+    public Keyboard(TLModel model) {
         initKeyboard();
+        this.model = model;
     }
 }
