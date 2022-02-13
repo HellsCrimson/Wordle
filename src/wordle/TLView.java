@@ -4,6 +4,7 @@ import src.game.Game;
 import src.keyboard.Keyboard;
 import src.keyboard.KeyboardListener;
 
+import java.util.Arrays;
 import java.util.Observer;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -12,8 +13,9 @@ import java.awt.event.*;
 
 public class TLView implements Observer {
 
-    private static final Dimension PANEL_SIZE = new Dimension(800, 400);
+    private static final Dimension PANEL_SIZE = new Dimension(800, 500);
     private static final Dimension KEYBOARD_SIZE = new Dimension(800, 50);
+    private static final Dimension SQUARE_SIZE = new Dimension(80, 80);
     private static final int PADDING = 8;
 
     private final TLModel model;
@@ -26,8 +28,6 @@ public class TLView implements Observer {
     private JPanel panelOption;
 
     private final JTextField[][] letterArea = new JTextField[6][5];
-    private int letterXAxis = 0;
-    private int letterYAxis = 0;
 
     private JButton[][] keyboard;
 
@@ -47,24 +47,7 @@ public class TLView implements Observer {
         update(model, null);
     }
 
-    public int getLetterXAxis() {
-        return letterXAxis;
-    }
-
-    public void setLetterXAxis(int letterXAxis) {
-        this.letterXAxis = letterXAxis;
-    }
-
-    public int getLetterYAxis() {
-        return letterYAxis;
-    }
-
-    public void setLetterYAxis(int letterYAxis) {
-        this.letterYAxis = letterYAxis;
-    }
-
-    public void createControls()
-    {
+    public void createControls() {
         frame = new JFrame("Wordle by Matthias Rauline");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         KeyboardListener keyboardListener = new KeyboardListener(controller);
@@ -98,15 +81,19 @@ public class TLView implements Observer {
 
     @Override
     public void update(java.util.Observable o, Object arg) {
-        checkWinner();
+        updateColorKeyboard();
+
         checkNeedLetter();
         checkNotValid();
 
-        updateColorKeyboard();
         if (model.getGame().getEnterPressed()) {
             colorGridBackground();
             model.getGame().changeEnterPressed();
         }
+
+        checkWinner();
+        checkLost();
+
         frame.repaint();
     }
 
@@ -138,6 +125,30 @@ public class TLView implements Observer {
                     "You won using " + model.getGame().indexBuffer + " attempt(s)\n"
                     + "Do you want to restart the game?",
                     "Winner",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    optionButtons,
+                    optionButtons[0]);
+
+            if (response == JOptionPane.NO_OPTION) {
+                frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+            } else {
+                // TODO restart game
+                // new word to find
+                controller.changeWord();
+            }
+        }
+    }
+
+    private void checkLost() {
+        if (model.getKeyboard().lost) {
+            model.getKeyboard().lost = false;
+            String[] optionButtons = {"Yes", "No"};
+            int response = JOptionPane.showOptionDialog(frame,
+                    "You lost. The correct word was: " + model.getGame().getWordToFind() + "\n"
+                            + "Do you want to restart the game?",
+                    "Lost",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
                     null,
@@ -256,7 +267,7 @@ public class TLView implements Observer {
 
     private void createPanel() {
         panelDisplay = new JPanel();
-        panelDisplay.setLayout(new GridLayout(0,5, PADDING, PADDING));
+        panelDisplay.setLayout(new GridBagLayout());
 
         createGrid();
 
@@ -264,14 +275,19 @@ public class TLView implements Observer {
     }
 
     private void createGrid() {
+        GridBagConstraints constraints = new GridBagConstraints();
         for (int y = 0; y < letterArea.length; y++) {
             for (int x = 0; x < letterArea[y].length; x++) {
+                constraints.gridx = x;
+                constraints.gridy = y;
+
                 letterArea[y][x] = new JTextField("");
+                letterArea[y][x].setPreferredSize(SQUARE_SIZE);
                 letterArea[y][x].setHorizontalAlignment(SwingConstants.CENTER);
                 letterArea[y][x].setEditable(false);
                 letterArea[y][x].setBackground(Color.WHITE);
                 letterArea[y][x].setFocusable(false);
-                panelDisplay.add(letterArea[y][x]);
+                panelDisplay.add(letterArea[y][x], constraints);
             }
         }
     }
@@ -315,7 +331,10 @@ public class TLView implements Observer {
 
     public void displayWords() {
         Game game = model.getGame();
-        for (int y = 0; y <= game.indexBuffer; y++) {
+        int indexBuffer = game.indexBuffer + 1;
+        if (indexBuffer > 6)
+            indexBuffer = 6;
+        for (int y = 0; y < indexBuffer; y++) {
             for (int x = 0; x < game.wordsBuffer[y].length(); x++) {
                 letterArea[y][x].setText(String.valueOf(game.wordsBuffer[y].charAt(x)));
             }
@@ -330,22 +349,40 @@ public class TLView implements Observer {
         String[] correctPlaceLetters = model.getGame().getCorrectPlaceLetters();
 
         int currIndex = model.getGame().indexBuffer - 1; // index already + 1 at this point
+        if (currIndex < 0)
+            currIndex = 0;
 
         for (int i = 0; i < letterArea[currIndex].length; i++) { // All line in gray
             letterArea[currIndex][i].setBackground(Color.GRAY);
         }
 
+        cleanArr(correctPlaceLetters, correctLetters);
         colorLine(correctLetters, currIndex, Color.YELLOW);
         colorLine(correctPlaceLetters, currIndex, Color.GREEN);
     }
 
-    private void colorLine(String[] correctLetters, int currIndex, Color color) {
-        for (String letter : correctLetters) {
-            if (letter != null) {
-                for (int i = 0; i < letterArea[currIndex].length; i++) {
-                    if (letterArea[currIndex][i].getText().equals(letter)) {
-                        letterArea[currIndex][i].setBackground(color);
-                        break;
+    private void colorLine(String[] correctLetters, int index, Color color) {
+        for (int i = 0; i < correctLetters.length; i++) {
+            if (correctLetters[i] != null) {
+                letterArea[index][i].setBackground(color);
+            }
+        }
+    }
+
+    private void cleanArr(String[] correctPlaceLetters, String[] correctLetters) {
+        int[] indexLetter = new int[correctPlaceLetters.length];
+        for (int i = 0; i < correctPlaceLetters.length; i++) {
+            if (correctPlaceLetters[i] != null && correctLetters[i] != null) {
+                indexLetter[i] = i;
+            } else {
+                indexLetter[i] = -1;
+            }
+        }
+        for (int i : indexLetter) {
+            if (i != -1) {
+                for (int y = 0; y < correctLetters.length; y++) {
+                    if (indexLetter[y] == -1 && correctLetters[y] != null && correctLetters[y].equals(correctPlaceLetters[i])) {
+                        correctLetters[y] = null;
                     }
                 }
             }

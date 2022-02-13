@@ -28,6 +28,7 @@ public class TLModel extends Observable {
     }
 
     public void restartGame() {
+        // TODO restart the game in the model and view
         setChanged();
         notifyObservers();
     }

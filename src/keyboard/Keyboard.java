@@ -10,13 +10,14 @@ public class Keyboard {
     private TLModel model;
 
     public boolean won = false;
+    public boolean lost = false;
     public boolean needLetter = false;
     public boolean notValid = false;
 
     public boolean needBeValid = true;
 
     private Key[][] keys;
-    private String keysAvalable[][] = new String[][] {
+    private final String[][] keysAvalable = new String[][] {
         {"Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"},
         {"A", "S", "D", "F", "G", "H", "J", "K", "L"},
         {"ENTER", "Z", "X", "C", "V", "B", "N", "M", "DELETE"}
@@ -26,16 +27,12 @@ public class Keyboard {
         return keys;
     }
 
-    public String[][] getKeysAvalable() {
-        return keysAvalable;
-    }
-
     private void initKeyboard() {
         keys = new Key[keysAvalable.length][getMaxRowKeys()];
         for (int y = 0; y < keysAvalable.length; y++) {
             for (int x = 0; x < keysAvalable[y].length; x++) {
                 keys[y][x] = new Key(keysAvalable[y][x]);
-                if (keys[y][x].getLetter() == "ENTER" || keys[y][x].getLetter() == "DELETE") {
+                if (keys[y][x].getLetter().equals("ENTER") || keys[y][x].getLetter().equals("DELETE")) {
                     keys[y][x].changeState(States.SPECIAL);
                 }
             }
@@ -57,40 +54,33 @@ public class Keyboard {
             String userWord = game.getCurrentUserWord();
             if (userWord.length() == 5) {
                 if (game.isValidWord(userWord) || !needBeValid) {
-                    model.getGame().changeEnterPressed();
-                    if (game.isCorrectWord(userWord)) {
-                        // You won
-                        // TODO put all letter in green
-                        game.setCurrentUserWord("");
-                        won = true;
-                    } else {
-                        String[] correctLetters = game.correctLetters(userWord);
-                        for (String correctLetter : correctLetters) {
-                            changeKeyState(correctLetter, States.WRONG_PLACE);
-                            // TODO put correct letter in YELLOW
-                        }
-                        correctLetters = game.correctPlaceLetters(userWord);
-                        for (String correctLetter : correctLetters) {
-                            changeKeyState(correctLetter, States.RIGHT);
-                            // TODO put correct letter in GREEN
-                        }
-                        for (int i = 0; i < userWord.length(); i++) {
-                            for (Key[] rowKey : keys) {
-                                for (Key currKey : rowKey) {
-                                    if (currKey != null && Objects.equals(currKey.getLetter(), String.valueOf(userWord.charAt(i))) && currKey.getState() == States.NOT_USED) {
-                                        changeKeyState(String.valueOf(userWord.charAt(i)), States.WRONG);
-                                        // TODO put correct letter in DARK_GREY
-                                    }
+                    String[] correctLetters = game.correctLetters(userWord);
+                    for (String correctLetter : correctLetters) {
+                        changeKeyState(correctLetter, States.WRONG_PLACE);
+                    }
+                    correctLetters = game.correctPlaceLetters(userWord);
+                    for (String correctLetter : correctLetters) {
+                        changeKeyState(correctLetter, States.RIGHT);
+                    }
+                    for (int i = 0; i < userWord.length(); i++) {
+                        for (Key[] rowKey : keys) {
+                            for (Key currKey : rowKey) {
+                                if (currKey != null && currKey.getLetter().equals(String.valueOf(userWord.charAt(i))) && currKey.getState() == States.NOT_USED) {
+                                    changeKeyState(String.valueOf(userWord.charAt(i)), States.WRONG);
                                 }
                             }
                         }
-                        game.setCurrentUserWord("");
                     }
+                    if (game.isCorrectWord(userWord))
+                        won = true;
 
-                    if (game.indexBuffer < 5)
+                    game.setCurrentUserWord("");
+                    model.getGame().changeEnterPressed();
+
+                    if (game.indexBuffer <= 5)
                         game.indexBuffer += 1;
-                    else {
-                        // TODO lost
+                    else if (!won) {
+                        lost = true;
                         game.changeWordToFind();
                         game.resetWordBuffer();
                         resetKeyboard();
