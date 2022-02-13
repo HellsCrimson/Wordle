@@ -3,7 +3,6 @@ package src.keyboard;
 import src.game.Game;
 import src.wordle.TLModel;
 
-import javax.swing.*;
 import java.util.Objects;
 
 public class Keyboard {
@@ -58,6 +57,7 @@ public class Keyboard {
             String userWord = game.getCurrentUserWord();
             if (userWord.length() == 5) {
                 if (game.isValidWord(userWord) || !needBeValid) {
+                    model.getGame().changeEnterPressed();
                     if (game.isCorrectWord(userWord)) {
                         // You won
                         // TODO put all letter in green

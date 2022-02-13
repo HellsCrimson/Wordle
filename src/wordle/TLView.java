@@ -2,9 +2,11 @@ package src.wordle;
 
 import src.game.Game;
 import src.keyboard.Keyboard;
+import src.keyboard.KeyboardListener;
 
 import java.util.Observer;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -12,6 +14,7 @@ public class TLView implements Observer {
 
     private static final Dimension PANEL_SIZE = new Dimension(800, 400);
     private static final Dimension KEYBOARD_SIZE = new Dimension(800, 50);
+    private static final int PADDING = 8;
 
     private final TLModel model;
     private final TLController controller;
@@ -29,12 +32,12 @@ public class TLView implements Observer {
     private JButton[][] keyboard;
 
     public TLView(TLModel model, TLController controller)  {
-        // Load the correct look on mac
-        try {
+        // Load the CrossPlatformLook on mac
+        /*try {
             UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName() );
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
         this.model = model;
         this.controller = controller;
@@ -64,6 +67,7 @@ public class TLView implements Observer {
     {
         frame = new JFrame("Wordle by Matthias Rauline");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        KeyboardListener keyboardListener = new KeyboardListener(controller);
 
         Container contentPane = frame.getContentPane();
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
@@ -71,12 +75,20 @@ public class TLView implements Observer {
         createPanel();
         contentPane.add(panelDisplay);
 
-        createOption();
+        createOption(keyboardListener);
         contentPane.add(panelOption);
 
         createKeyboard();
-        contentPane.add(panelKeyboard10);
-        contentPane.add(panelKeyboard9);
+        JPanel panelKeyboard = new JPanel();
+        panelKeyboard.setLayout(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.gridy = 0;
+        panelKeyboard.add(panelKeyboard10, constraints);
+        constraints.gridy = 1;
+        constraints.gridheight = 2;
+        constraints.insets = new Insets(PADDING,0,0,0);
+        panelKeyboard.add(panelKeyboard9, constraints);
+        contentPane.add(panelKeyboard);
 
 
         frame.pack();
@@ -91,6 +103,10 @@ public class TLView implements Observer {
         checkNotValid();
 
         updateColorKeyboard();
+        if (model.getGame().getEnterPressed()) {
+            colorGridBackground();
+            model.getGame().changeEnterPressed();
+        }
         frame.repaint();
     }
 
@@ -117,10 +133,24 @@ public class TLView implements Observer {
     private void checkWinner() {
         if (model.getKeyboard().won) {
             model.getKeyboard().won = false;
-            JOptionPane.showMessageDialog(frame,
-                    "You won using " + model.getGame().indexBuffer + " attempt(s)",
+            String[] optionButtons = {"Yes", "No"};
+            int response = JOptionPane.showOptionDialog(frame,
+                    "You won using " + model.getGame().indexBuffer + " attempt(s)\n"
+                    + "Do you want to restart the game?",
                     "Winner",
-                    JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    optionButtons,
+                    optionButtons[0]);
+
+            if (response == JOptionPane.NO_OPTION) {
+                frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+            } else {
+                // TODO restart game
+                // new word to find
+                controller.changeWord();
+            }
         }
     }
 
@@ -142,31 +172,39 @@ public class TLView implements Observer {
         }
     }
 
-    private void createOption() {
+    private void createOption(KeyboardListener keyboardListener) {
         panelOption = new JPanel();
-        panelOption.setLayout(new GridLayout());
+        panelOption.setLayout(new GridBagLayout());
+        GridBagConstraints constraint = new GridBagConstraints();
+        constraint.gridx = 0;
+        constraint.ipadx = 40;
 
         //createSeedPanel();
-        createFalseWordPanel();
-        createAnswerPanel();
-        createSetWordPanel();
+        createFalseWordPanel(constraint, keyboardListener);
+        constraint.gridx = 2;
+        createAnswerPanel(constraint, keyboardListener);
+        constraint.gridx = 4;
+        createSetWordPanel(constraint, keyboardListener);
     }
 
-    private void createSetWordPanel() {
+    private void createSetWordPanel(GridBagConstraints constraints, KeyboardListener keyboardListener) {
         JCheckBox setWord = new JCheckBox("Set Answer");
         setWord.addActionListener((ActionEvent e) -> {
-            model.getGame().setFixedWord(!model.getGame().getFixedWord());
+            model.getGame().setIsFixedWord(!model.getGame().isFixedWord());
         });
-        panelOption.add(setWord);
+        setWord.addKeyListener(keyboardListener);
+        setWord.setFocusTraversalKeysEnabled(false);
+        panelOption.add(setWord, constraints);
     }
 
-    private void createAnswerPanel() {
+    private void createAnswerPanel(GridBagConstraints constraints, KeyboardListener keyboardListener) {
         JPanel answerPanel = new JPanel();
 
         JTextField answerField = new JTextField("");
         answerField.setHorizontalAlignment(SwingConstants.CENTER);
         answerField.setPreferredSize(new Dimension(60, 20));
         answerField.setEditable(false);
+        answerField.setFocusable(false);
 
         JCheckBox showAnswer = new JCheckBox("Show answer");
         showAnswer.addActionListener((ActionEvent e) -> {
@@ -175,23 +213,28 @@ public class TLView implements Observer {
             else
                 answerField.setText("");
         });
+        showAnswer.addKeyListener(keyboardListener);
+        showAnswer.setFocusTraversalKeysEnabled(false);
         answerPanel.add(showAnswer);
-
+        answerField.addKeyListener(keyboardListener);
+        answerField.setFocusTraversalKeysEnabled(false);
         answerPanel.add(answerField);
 
-        panelOption.add(answerPanel);
+        panelOption.add(answerPanel, constraints);
     }
 
-    private void createFalseWordPanel() {
+    private void createFalseWordPanel(GridBagConstraints constraints, KeyboardListener keyboardListener) {
         JCheckBox falseWord = new JCheckBox("Error On False Word");
         falseWord.setSelected(true);
         falseWord.addActionListener((ActionEvent e) -> {
             model.getKeyboard().needBeValid = !model.getKeyboard().needBeValid;
         });
-        panelOption.add(falseWord);
+        falseWord.addKeyListener(keyboardListener);
+        falseWord.setFocusTraversalKeysEnabled(false);
+        panelOption.add(falseWord, constraints);
     }
 
-    private void createSeedPanel() {
+    private void createSeedPanel(GridBagConstraints constraints) {
         JPanel seedPanel = new JPanel();
         JTextField seedText = new JTextField("The seed is:");
         seedText.setEditable(false);
@@ -208,12 +251,12 @@ public class TLView implements Observer {
             // TODO set the new seed
         });
         seedPanel.add(seedArea);
-        panelOption.add(seedPanel);
+        panelOption.add(seedPanel, constraints);
     }
 
     private void createPanel() {
         panelDisplay = new JPanel();
-        panelDisplay.setLayout(new GridLayout(0,5));
+        panelDisplay.setLayout(new GridLayout(0,5, PADDING, PADDING));
 
         createGrid();
 
@@ -227,6 +270,7 @@ public class TLView implements Observer {
                 letterArea[y][x].setHorizontalAlignment(SwingConstants.CENTER);
                 letterArea[y][x].setEditable(false);
                 letterArea[y][x].setBackground(Color.WHITE);
+                letterArea[y][x].setFocusable(false);
                 panelDisplay.add(letterArea[y][x]);
             }
         }
@@ -234,10 +278,10 @@ public class TLView implements Observer {
 
     private void createKeyboard() {
         panelKeyboard10 = new JPanel();
-        panelKeyboard10.setLayout(new GridLayout(0,10));
+        panelKeyboard10.setLayout(new GridLayout(0,10, PADDING, PADDING));
         panelKeyboard10.setPreferredSize(KEYBOARD_SIZE);
         panelKeyboard9 = new JPanel();
-        panelKeyboard9.setLayout(new GridLayout(0,9));
+        panelKeyboard9.setLayout(new GridLayout(0,9, PADDING, PADDING));
         panelKeyboard9.setPreferredSize(new Dimension(KEYBOARD_SIZE.width, KEYBOARD_SIZE.height * 2));
 
         Keyboard kb = model.getKeyboard();
@@ -245,9 +289,12 @@ public class TLView implements Observer {
         for (int y = 0; y < keyboard.length; y++) {
             for (int x = 0; x < keyboard[y].length; x++) {
                 if (kb.getKeys()[y][x] != null) {
-                    keyboard[y][x] = new JButton(kb.getKeys()[y][x].getLetter());
+                    JButton button = new JButton(kb.getKeys()[y][x].getLetter());
+                    button.setBorder(new EmptyBorder(0, 0, 0, 0));
+                    keyboard[y][x] = button;
                     keyboard[y][x].setOpaque(true);
                     keyboard[y][x].setBackground(Color.WHITE);
+                    keyboard[y][x].setFocusable(false);
                     int finalY = y;
                     int finalX = x;
 
@@ -266,7 +313,7 @@ public class TLView implements Observer {
         }
     }
 
-    private void displayWords() {
+    public void displayWords() {
         Game game = model.getGame();
         for (int y = 0; y <= game.indexBuffer; y++) {
             for (int x = 0; x < game.wordsBuffer[y].length(); x++) {
@@ -274,7 +321,33 @@ public class TLView implements Observer {
             }
             for (int x = game.wordsBuffer[y].length(); x < 5; x++) {
                 letterArea[y][x].setText("");
-                letterArea[y][x].setBackground(Color.WHITE);
+            }
+        }
+    }
+
+    public void colorGridBackground() {
+        String[] correctLetters = model.getGame().getCorrectLetters();
+        String[] correctPlaceLetters = model.getGame().getCorrectPlaceLetters();
+
+        int currIndex = model.getGame().indexBuffer - 1; // index already + 1 at this point
+
+        for (int i = 0; i < letterArea[currIndex].length; i++) { // All line in gray
+            letterArea[currIndex][i].setBackground(Color.GRAY);
+        }
+
+        colorLine(correctLetters, currIndex, Color.YELLOW);
+        colorLine(correctPlaceLetters, currIndex, Color.GREEN);
+    }
+
+    private void colorLine(String[] correctLetters, int currIndex, Color color) {
+        for (String letter : correctLetters) {
+            if (letter != null) {
+                for (int i = 0; i < letterArea[currIndex].length; i++) {
+                    if (letterArea[currIndex][i].getText().equals(letter)) {
+                        letterArea[currIndex][i].setBackground(color);
+                        break;
+                    }
+                }
             }
         }
     }

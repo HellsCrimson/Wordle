@@ -3,6 +3,7 @@ package src.wordle;
 import src.game.Game;
 import src.keyboard.Key;
 import src.keyboard.Keyboard;
+import src.keyboard.KeyboardListener;
 
 import java.util.Observable;
 import java.util.Random;
@@ -35,9 +36,5 @@ public class TLModel extends Observable {
         initialise();
         setChanged();
         notifyObservers();
-    }
-
-    private void startGame() {
-        // TODO
     }
 }

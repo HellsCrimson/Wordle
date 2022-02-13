@@ -6,7 +6,8 @@ import java.io.FileNotFoundException;
 
 public class Game {
 
-    private boolean fixedWord = false;
+    private boolean isFixedWord = false;
+    private final String fixedWord = "ROGER";
 
     private String[] wordListAnswer;
     private String[] possibleWord;
@@ -15,6 +16,10 @@ public class Game {
 
     public String[] wordsBuffer;
     public int indexBuffer;
+
+    private String[] correctPlaceLetters;
+    private String[] correctLetters;
+    private boolean enterPressed = false;
 
     private Random rng;
     private long seed = -1;
@@ -28,9 +33,19 @@ public class Game {
         findNewWord();
     }
 
-    public boolean getFixedWord() { return fixedWord; }
+    public void changeEnterPressed() { enterPressed = !enterPressed; }
 
-    public void setFixedWord(boolean state) { fixedWord = state; }
+    public boolean getEnterPressed() { return enterPressed; }
+
+    public String[] getCorrectPlaceLetters() { return correctPlaceLetters; }
+
+    public String[] getCorrectLetters() { return correctLetters; }
+
+    public boolean isFixedWord() { return isFixedWord; }
+
+    public String getFixedWord() { return fixedWord; }
+
+    public void setIsFixedWord(boolean state) { isFixedWord = state; }
 
     public String getWordToFind() { return wordToFind; }
 
@@ -52,7 +67,7 @@ public class Game {
     }
 
     public void changeWordToFind() {
-        if (!fixedWord)
+        if (!isFixedWord)
             wordToFind = wordListAnswer[rng.nextInt(wordListAnswer.length)];
     }
 
@@ -101,6 +116,7 @@ public class Game {
                 }
             }
         }
+        correctLetters = correct;
         return correct;
     }
 
@@ -109,9 +125,9 @@ public class Game {
         for (int i = 0; i < str.length(); i++) {
             if (str.charAt(i) == wordToFind.charAt(i)) {
                 correct[i] = String.valueOf(str.charAt(i));
-                break;
             }
         }
+        correctPlaceLetters = correct;
         return correct;
     }
 

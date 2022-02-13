@@ -13,5 +13,6 @@ public class WordleGuiDemo {
         TLModel model = new TLModel();
         TLController controller = new TLController(model);
         TLView view = new TLView(model, controller);
+        controller.setView(view);
     }
 }
