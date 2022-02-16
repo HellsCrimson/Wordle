@@ -48,6 +48,9 @@ public class GridPanel extends JPanel {
         }
     }
 
+    /** Called at each update
+     * Display the words of the index buffer
+     * When there are no more letters, go through the rest and put an empty word*/
     public void displayWords() {
         int indexBuffer = model.indexBuffer + 1;
         if (indexBuffer > 6)
@@ -62,6 +65,7 @@ public class GridPanel extends JPanel {
         }
     }
 
+    /** Update the case of the letters with the correct color when a word is entered */
     public void colorGridBackground() {
         String[] correctLetters = model.getCorrectLetters();
         String[] correctPlaceLetters = model.getCorrectPlaceLetters();
@@ -71,7 +75,7 @@ public class GridPanel extends JPanel {
             currIndex = 0;
 
         for (int i = 0; i < letterArea[currIndex].length; i++) { // All line in gray
-            letterArea[currIndex][i].setBackground(Color.GRAY);
+            letterArea[currIndex][i].setBackground(Color.DARK_GRAY);
         }
 
         cleanArr(correctPlaceLetters, correctLetters);
@@ -79,6 +83,8 @@ public class GridPanel extends JPanel {
         colorLine(correctPlaceLetters, currIndex, Color.GREEN);
     }
 
+    /** Do the coloration for a single line with the color provided
+     * For the coloration use the letters of the array provided */
     private void colorLine(String[] correctLetters, int index, Color color) {
         for (int i = 0; i < correctLetters.length; i++) {
             if (correctLetters[i] != null) {
@@ -87,6 +93,9 @@ public class GridPanel extends JPanel {
         }
     }
 
+    /** Compare the array of correct letters with the one where the letter are in the correct place
+     * For each letter in the correct place one letter is removed from the other array
+     * If a letter is also in both array at the same place, then it is removed from the correct letters */
     private void cleanArr(String[] correctPlaceLetters, String[] correctLetters) {
         int[] indexLetter = new int[correctPlaceLetters.length];
         for (int i = 0; i < correctPlaceLetters.length; i++) {

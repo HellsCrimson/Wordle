@@ -31,9 +31,14 @@ public class TLModel extends Observable {
     private Random rng;
     private long seed = -1;
 
-    public Keyboard getKeyboard() { return keyboard; }
+    public TLModel() {
+        initialise();
+        setChanged();
+        notifyObservers();
+    }
 
-    public void initialise() {
+    /** Initialise the model with the basic attributes */
+    private void initialise() {
         keyboard = new Keyboard(this);
         currentUserWord = "";
         wordsBuffer = new String[6];
@@ -43,23 +48,22 @@ public class TLModel extends Observable {
         findNewWord();
     }
 
+    /** Send the key press event to the keyboard
+     * notify the observers to call the update */
     public void keyPressed(Key key) {
         keyboard.KeyPressed(key);
         setChanged();
         notifyObservers();
     }
 
+    /** Reset the attribute to be ready for another game */
     public void restartGame() {
         // TODO restart the game in the model
         setChanged();
         notifyObservers();
     }
 
-    public TLModel() {
-        initialise();
-        setChanged();
-        notifyObservers();
-    }
+    public Keyboard getKeyboard() { return keyboard; }
 
     public void changeEnterPressed() { enterPressed = !enterPressed; }
 
@@ -79,14 +83,14 @@ public class TLModel extends Observable {
 
     public long getSeed() { return seed; }
 
-    public String getCurrentUserWord() {
-        return currentUserWord;
-    }
+    public String getCurrentUserWord() { return currentUserWord; }
 
-    public void setCurrentUserWord(String str) {
-        currentUserWord = str.toUpperCase();
-    }
+    public void setCurrentUserWord(String str) { currentUserWord = str.toUpperCase(); }
 
+    private void getRandom() { rng = new Random(); }
+
+    /** Find a new word
+     * Only call on startup cause call creation wordlist */
     private void findNewWord() {
         loadWords();
         wordListAnswer.sort();
@@ -94,6 +98,8 @@ public class TLModel extends Observable {
         wordToFind = wordListAnswer.dataAt(rng.nextInt(wordListAnswer.length));
     }
 
+    /** Find a new word
+     * Only call when the game has already started */
     public void changeWordToFind() {
         if (!isFixedWord)
             wordToFind = wordListAnswer.dataAt(rng.nextInt(wordListAnswer.length));
@@ -104,15 +110,13 @@ public class TLModel extends Observable {
         possibleWord = new WordList("src/resources/words.txt");
     }
 
-    private void getRandom() {
-        rng = new Random();
-    }
-
     public boolean isValidWord(String str) {
-        // Search in wordListAnswer and possibleWord (binarySearch)
         return (wordListAnswer.search(str) >= 0) || (possibleWord.search(str) >= 0);
     }
 
+    /** Check the letter that are correct but can be in the wrong place
+     * Return an array with the letters that are correct or null
+     * The letters are in the place where the user put them */ // TODO check this
     public String[] correctLetters(String str) {
         String[] correct = new String[wordToFind.length()];
         for (int i = 0; i < str.length(); i++) {
@@ -127,6 +131,8 @@ public class TLModel extends Observable {
         return correct;
     }
 
+    /** Check the letter that are correct and in the correct place
+     * Return an array with the letters that are correct or null */
     public String[] correctPlaceLetters(String str) {
         String[] correct = new String[wordToFind.length()];
         for (int i = 0; i < str.length(); i++) {
@@ -140,10 +146,9 @@ public class TLModel extends Observable {
 
     public boolean isCorrectWord(String str) { return str.equals(wordToFind); }
 
-    public void addLetter(String character) {
-        currentUserWord += character;
-    }
+    public void addLetter(String character) { currentUserWord += character; }
 
+    /** Reset the word buffer at the end of a game */
     public void resetWordBuffer() {
         for (String row : wordsBuffer) {
             row = "";

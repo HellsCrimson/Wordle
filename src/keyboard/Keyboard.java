@@ -22,10 +22,9 @@ public class Keyboard {
         {"ENTER", "Z", "X", "C", "V", "B", "N", "M", "DELETE"}
     };
 
-    public Key[][] getKeys() {
-        return keys;
-    }
+    public Key[][] getKeys() { return keys; }
 
+    /** Put all the keys in the correct state */
     private void initKeyboard() {
         keys = new Key[keysAvalable.length][getMaxRowKeys()];
         for (int y = 0; y < keysAvalable.length; y++) {
@@ -38,12 +37,12 @@ public class Keyboard {
         }
     }
 
+    /** Return the number of keys on the row with the most keys */
     public int getMaxRowKeys() {
         int max = 0;
-        for (int i = 0; i < keysAvalable.length; i++) {
-            if (keysAvalable[i].length > max) {
-                max = keysAvalable[i].length;
-            }
+        for (String[] strings : keysAvalable) {
+            if (strings.length > max)
+                max = strings.length;
         }
         return max;
     }
@@ -122,6 +121,7 @@ public class Keyboard {
         }
     }
 
+    /** Put the keyboard like when it was created */
     private void resetKeyboard() {
         for (Key[] row : keys) {
             for (Key key : row) {

@@ -7,14 +7,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class KeyboardListener implements KeyListener {
-    private TLController controller;
+public class KeyboardListener extends KeyAdapter {
+    private final TLController controller;
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-    }
-
-    @Override
     public void keyPressed(KeyEvent e) {
         // 10 = enter; 8 = delete
         if (e.getKeyCode() == 10 || e.getKeyCode() == 8 || (e.getKeyCode() >= 65 && e.getKeyCode() <= 90)) {
@@ -22,11 +17,5 @@ public class KeyboardListener implements KeyListener {
         }
     }
 
-    @Override
-    public void keyReleased(KeyEvent e) {
-    }
-
-    public KeyboardListener(TLController controller) {
-        this.controller = controller;
-    }
+    public KeyboardListener(TLController controller) { this.controller = controller; }
 }

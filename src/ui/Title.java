@@ -5,8 +5,8 @@ import java.awt.*;
 
 public class Title extends JTextField {
 
-    public Title() {
-        setText("WORDLE");
+    public Title(String title) {
+        setText(title);
         setFocusable(false);
         setHorizontalAlignment(JTextField.CENTER);
         setBackground(null);

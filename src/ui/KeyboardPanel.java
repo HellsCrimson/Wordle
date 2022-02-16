@@ -32,6 +32,7 @@ public class KeyboardPanel extends JPanel {
         addKeyboardElements();
     }
 
+    /** Add the two different panel of the keyboard together */
     private void addKeyboardElements() {
         setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
@@ -43,6 +44,8 @@ public class KeyboardPanel extends JPanel {
         add(panelKeyboard9, constraints);
     }
 
+    /** Create the keyboard (visual) according to the keyboard (which has the states)
+     * Each key has an action listener for the key press */
     private void createKeyboard() {
         panelKeyboard10 = new JPanel();
         panelKeyboard10.setLayout(new GridLayout(0,10, PADDING, PADDING));
@@ -80,6 +83,7 @@ public class KeyboardPanel extends JPanel {
         }
     }
 
+    /** Go through the keys to update the color of the keys */
     public void updateColorKeyboard() {
         for (int y = 0; y < keyboard.length; y++) {
             for (int x = 0; x < model.getKeyboard().getMaxRowKeys(); x++) {
