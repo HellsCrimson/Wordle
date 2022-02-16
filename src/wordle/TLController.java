@@ -26,7 +26,7 @@ public class TLController {
         } else {
             findLetter((char)characterCode);
         }
-        view.displayWords();
+        view.getDisplayPanel().displayWords();
     }
 
     private void findSpecialKey(int keyCode) {

@@ -1,6 +1,5 @@
 package src.keyboard;
 
-import src.game.Game;
 import src.wordle.TLModel;
 
 import java.util.Objects;
@@ -49,16 +48,16 @@ public class Keyboard {
         return max;
     }
 
-    public void KeyPressed(Key key, Game game) {
+    public void KeyPressed(Key key) {
         if (Objects.equals(key.getLetter(), "ENTER")) {
-            String userWord = game.getCurrentUserWord();
+            String userWord = model.getCurrentUserWord();
             if (userWord.length() == 5) {
-                if (game.isValidWord(userWord) || !needBeValid) {
-                    String[] correctLetters = game.correctLetters(userWord);
+                if (model.isValidWord(userWord) || !needBeValid) {
+                    String[] correctLetters = model.correctLetters(userWord);
                     for (String correctLetter : correctLetters) {
                         changeKeyState(correctLetter, States.WRONG_PLACE);
                     }
-                    correctLetters = game.correctPlaceLetters(userWord);
+                    correctLetters = model.correctPlaceLetters(userWord);
                     for (String correctLetter : correctLetters) {
                         changeKeyState(correctLetter, States.RIGHT);
                     }
@@ -71,21 +70,21 @@ public class Keyboard {
                             }
                         }
                     }
-                    if (game.isCorrectWord(userWord))
+                    if (model.isCorrectWord(userWord))
                         won = true;
 
-                    game.setCurrentUserWord("");
-                    model.getGame().changeEnterPressed();
+                    model.setCurrentUserWord("");
+                    model.changeEnterPressed();
 
-                    if (game.indexBuffer <= 5)
-                        game.indexBuffer += 1;
+                    if (model.indexBuffer <= 5)
+                        model.indexBuffer += 1;
                     else if (!won) {
                         lost = true;
-                        game.changeWordToFind();
-                        game.resetWordBuffer();
+                        model.changeWordToFind();
+                        model.resetWordBuffer();
                         resetKeyboard();
                         model.restartGame();
-                        game.indexBuffer = 0;
+                        model.indexBuffer = 0;
                     }
                 } else {
                     // not a valid word
@@ -96,15 +95,15 @@ public class Keyboard {
                 needLetter = true;
             }
         } else if (key.getLetter().equals("DELETE")) {
-            String userWord = game.getCurrentUserWord();
+            String userWord = model.getCurrentUserWord();
             if (userWord.length() > 0) {
-                game.setCurrentUserWord(userWord.substring(0, userWord.length() - 1));
-                game.wordsBuffer[game.indexBuffer] = game.getCurrentUserWord();
+                model.setCurrentUserWord(userWord.substring(0, userWord.length() - 1));
+                model.wordsBuffer[model.indexBuffer] = model.getCurrentUserWord();
             }
         } else {
-            if (game.getCurrentUserWord().length() < 5) {
-                game.wordsBuffer[game.indexBuffer] = game.getCurrentUserWord() + key.getLetter();
-                game.addLetter(key.getLetter());
+            if (model.getCurrentUserWord().length() < 5) {
+                model.wordsBuffer[model.indexBuffer] = model.getCurrentUserWord() + key.getLetter();
+                model.addLetter(key.getLetter());
             }
         }
     }
