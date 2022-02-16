@@ -1,5 +1,6 @@
 package src.wordle;
 
+import src.data.WordList;
 import src.keyboard.Key;
 import src.keyboard.Keyboard;
 import src.keyboard.KeyboardListener;
@@ -15,8 +16,8 @@ public class TLModel extends Observable {
     private boolean isFixedWord = false;
     private final String fixedWord = "ROGER";
 
-    private String[] wordListAnswer;
-    private String[] possibleWord;
+    private WordList wordListAnswer;
+    private WordList possibleWord;
     private String wordToFind;
     private String currentUserWord;
 
@@ -49,7 +50,7 @@ public class TLModel extends Observable {
     }
 
     public void restartGame() {
-        // TODO restart the game in the model and view
+        // TODO restart the game in the model
         setChanged();
         notifyObservers();
     }
@@ -88,49 +89,28 @@ public class TLModel extends Observable {
 
     private void findNewWord() {
         loadWords();
-        sort(wordListAnswer);
-        sort(possibleWord);
-        wordToFind = wordListAnswer[rng.nextInt(wordListAnswer.length)];
+        wordListAnswer.sort();
+        possibleWord.sort();
+        wordToFind = wordListAnswer.dataAt(rng.nextInt(wordListAnswer.length));
     }
 
     public void changeWordToFind() {
         if (!isFixedWord)
-            wordToFind = wordListAnswer[rng.nextInt(wordListAnswer.length)];
+            wordToFind = wordListAnswer.dataAt(rng.nextInt(wordListAnswer.length));
     }
 
     private void loadWords() {
-        ArrayList<String> loadedWordList = loadFile("src/resources/common.txt");
-        wordListAnswer = loadedWordList.toArray(new String[0]);
-        ArrayList<String> loadedPossibleWord = loadFile("src/resources/words.txt");
-        possibleWord = loadedPossibleWord.toArray(new String[0]);
-    }
-
-    private ArrayList<String> loadFile(String path) {
-        ArrayList<String> data = new ArrayList<String>();
-        try {
-            File file = new File(path);
-            Scanner scanner = new Scanner(file);
-            while (scanner.hasNextLine()) {
-                data.add(scanner.nextLine().toUpperCase());
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("An error occurred");
-            e.printStackTrace();
-        }
-        return data;
+        wordListAnswer = new WordList("src/resources/common.txt");
+        possibleWord = new WordList("src/resources/words.txt");
     }
 
     private void getRandom() {
         rng = new Random();
     }
 
-    private void sort(String[] arr) {
-        Arrays.sort(arr);
-    }
-
     public boolean isValidWord(String str) {
         // Search in wordListAnswer and possibleWord (binarySearch)
-        return (Arrays.binarySearch(wordListAnswer, str) >= 0) || (Arrays.binarySearch(possibleWord, str) >= 0);
+        return (wordListAnswer.search(str) >= 0) || (possibleWord.search(str) >= 0);
     }
 
     public String[] correctLetters(String str) {

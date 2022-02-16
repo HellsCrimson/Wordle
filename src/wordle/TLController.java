@@ -59,6 +59,6 @@ public class TLController {
     }
 
     public void changeWord() {
-        // model.changeWord();
+        model.changeWordToFind();
     }
 }

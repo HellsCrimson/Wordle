@@ -4,6 +4,7 @@ import src.keyboard.KeyboardListener;
 import src.ui.GridPanel;
 import src.ui.KeyboardPanel;
 import src.ui.OptionPanel;
+import src.ui.Title;
 
 import java.util.Observer;
 import javax.swing.*;
@@ -39,12 +40,15 @@ public class TLView implements Observer {
     }
 
     public void createControls() {
-        frame = new JFrame("Wordle by Matthias Rauline");
+        frame = new JFrame("Wordle");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         KeyboardListener keyboardListener = new KeyboardListener(controller);
 
         Container contentPane = frame.getContentPane();
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
+
+        Title title = new Title();
+        contentPane.add(title);
 
         panelDisplay = new GridPanel(model, controller, this);
         contentPane.add(panelDisplay);
