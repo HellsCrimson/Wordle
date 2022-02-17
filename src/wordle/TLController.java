@@ -16,19 +16,24 @@ public class TLController {
         this.view = view;
     }
 
+    /** Send key press for the visual keyboard */
     public void keyPressed(Key key) {
         model.keyPressed(key);
     }
 
+    /** Send key press for the physical keyboard */
     public void keyKeyboardPressed(int characterCode) {
         if (characterCode == 8 || characterCode == 10) { // 8 DELETE; 10 ENTER
             findSpecialKey(characterCode);
         } else {
             findLetter((char)characterCode);
         }
-        view.displayWords();
+        view.getDisplayPanel().displayWords();
     }
 
+    /** Only in case of special keys
+     * Search the keyboard (where the states of the keys are) for the correct key
+     * and sent the key press */
     private void findSpecialKey(int keyCode) {
         String toFind;
         if (keyCode == 8)
@@ -44,6 +49,9 @@ public class TLController {
         }
     }
 
+    /** For any key other than the special keys
+     * Search the keyboard (where the states of the keys are) for the correct key
+     * and sent the key press */
     private void findLetter(char character) {
         for (Key[] row : model.getKeyboard().getKeys()) {
             for (Key key : row) {
@@ -55,10 +63,10 @@ public class TLController {
     }
 
     public void initialise() {
-        model.initialise();
     }
 
+    /** Send the call for the modification of the word to find */
     public void changeWord() {
-        // model.changeWord();
+        model.changeWordToFind();
     }
 }
