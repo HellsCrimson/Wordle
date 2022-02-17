@@ -101,7 +101,6 @@ public class GridPanel extends JPanel {
         for (int i = 0; i < correctPlaceLetters.length; i++) {
             if (correctPlaceLetters[i] != null && correctLetters[i] != null) {
                 indexLetter[i] = i;
-                correctLetters[i] = null;
             } else {
                 indexLetter[i] = -1;
             }

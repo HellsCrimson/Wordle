@@ -11,7 +11,7 @@ public class Title extends JTextField {
         setHorizontalAlignment(JTextField.CENTER);
         setBackground(null);
         setBorder(null);
-        setFont(new Font("Helvetica", Font.PLAIN, 60));
+        setFont(new Font(null, Font.PLAIN, 60));
         setEditable(false);
     }
 }

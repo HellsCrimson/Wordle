@@ -1,10 +1,7 @@
 package src.wordle;
 
 import src.keyboard.KeyboardListener;
-import src.ui.GridPanel;
-import src.ui.KeyboardPanel;
-import src.ui.OptionPanel;
-import src.ui.Title;
+import src.ui.*;
 
 import java.util.Observer;
 import javax.swing.*;
@@ -48,6 +45,8 @@ public class TLView implements Observer {
 
         Container contentPane = frame.getContentPane();
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
+
+        contentPane.add(new Spacer(10));
 
         Title title = new Title("WORDLE");
         contentPane.add(title);

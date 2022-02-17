@@ -106,8 +106,7 @@ public class TLModel extends Observable {
     /** Find a new word
      * Only call when the game has already started */
     public void changeWordToFind() {
-        if (!isFixedWord)
-            wordToFind = wordListAnswer.dataAt(rng.nextInt(wordListAnswer.length));
+        wordToFind = wordListAnswer.dataAt(rng.nextInt(wordListAnswer.length));
     }
 
     private void loadWords() {

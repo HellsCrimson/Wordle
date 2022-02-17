@@ -38,6 +38,7 @@ public class OptionPanel extends JPanel {
         JCheckBox setWord = new JCheckBox("Set Answer");
         setWord.addActionListener((ActionEvent e) -> {
             model.setIsFixedWord(!model.isFixedWord());
+            refreshWord();
         });
         setWord.addKeyListener(keyboardListener);
         setWord.setFocusTraversalKeysEnabled(false);

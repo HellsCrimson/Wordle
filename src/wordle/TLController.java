@@ -62,8 +62,5 @@ public class TLController {
         }
     }
 
-    public void initialise() {
-    }
-
     public void restartGame() { model.restartGame(); }
 }
