@@ -65,8 +65,5 @@ public class TLController {
     public void initialise() {
     }
 
-    /** Send the call for the modification of the word to find */
-    public void changeWord() {
-        model.changeWordToFind();
-    }
+    public void restartGame() { model.restartGame(); }
 }

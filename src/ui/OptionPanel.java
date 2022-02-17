@@ -15,6 +15,8 @@ public class OptionPanel extends JPanel {
     private final TLController controller;
     private final TLView view;
 
+    private JTextField answerField;
+
     public OptionPanel(TLModel model, TLController controller, TLView view, KeyboardListener keyboardListener) {
         this.model = model;
         this.controller = controller;
@@ -45,7 +47,7 @@ public class OptionPanel extends JPanel {
     private void createAnswerPanel(GridBagConstraints constraints, KeyboardListener keyboardListener) {
         JPanel answerPanel = new JPanel();
 
-        JTextField answerField = new JTextField("");
+        answerField = new JTextField("");
         answerField.setHorizontalAlignment(SwingConstants.CENTER);
         answerField.setPreferredSize(new Dimension(60, 20));
         answerField.setEditable(false);
@@ -97,5 +99,9 @@ public class OptionPanel extends JPanel {
         });
         seedPanel.add(seedArea);
         add(seedPanel, constraints);
+    }
+
+    public void refreshWord() {
+        answerField.setText(model.getWordToFind());
     }
 }

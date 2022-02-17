@@ -3,10 +3,6 @@ package src.wordle;
 import src.data.WordList;
 import src.keyboard.Key;
 import src.keyboard.Keyboard;
-import src.keyboard.KeyboardListener;
-
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.*;
 
 public class TLModel extends Observable {
@@ -31,6 +27,8 @@ public class TLModel extends Observable {
     private Random rng;
     private long seed = -1;
 
+    public boolean restarting = false;
+
     public TLModel() {
         initialise();
         setChanged();
@@ -42,7 +40,7 @@ public class TLModel extends Observable {
         keyboard = new Keyboard(this);
         currentUserWord = "";
         wordsBuffer = new String[6];
-        Arrays.fill(wordsBuffer, "");
+        resetWordBuffer();
         getRandom();
         seed = rng.nextLong();
         findNewWord();
@@ -58,7 +56,12 @@ public class TLModel extends Observable {
 
     /** Reset the attribute to be ready for another game */
     public void restartGame() {
-        // TODO restart the game in the model
+        currentUserWord = "";
+        changeWordToFind();
+        resetWordBuffer();
+        keyboard.resetKeyboard();
+        restarting = true;
+
         setChanged();
         notifyObservers();
     }
@@ -75,11 +78,13 @@ public class TLModel extends Observable {
 
     public boolean isFixedWord() { return isFixedWord; }
 
-    public String getFixedWord() { return fixedWord; }
-
     public void setIsFixedWord(boolean state) { isFixedWord = state; }
 
-    public String getWordToFind() { return wordToFind; }
+    public String getWordToFind() {
+        if (!isFixedWord)
+            return wordToFind;
+        return fixedWord;
+    }
 
     public long getSeed() { return seed; }
 
@@ -118,10 +123,10 @@ public class TLModel extends Observable {
      * Return an array with the letters that are correct or null
      * The letters are in the place where they are in the correct word */
     public String[] correctLetters(String str) {
-        String[] correct = new String[wordToFind.length()];
+        String[] correct = new String[getWordToFind().length()];
         for (int i = 0; i < str.length(); i++) {
-            for (int j = 0; j < wordToFind.length(); j++) {
-                if (str.charAt(i) == wordToFind.charAt(j)) {
+            for (int j = 0; j < getWordToFind().length(); j++) {
+                if (str.charAt(i) == getWordToFind().charAt(j)) {
                     correct[i] = String.valueOf(str.charAt(i));
                     break;
                 }
@@ -134,9 +139,9 @@ public class TLModel extends Observable {
     /** Check the letter that are correct and in the correct place
      * Return an array with the letters that are correct or null */
     public String[] correctPlaceLetters(String str) {
-        String[] correct = new String[wordToFind.length()];
+        String[] correct = new String[getWordToFind().length()];
         for (int i = 0; i < str.length(); i++) {
-            if (str.charAt(i) == wordToFind.charAt(i)) {
+            if (str.charAt(i) == getWordToFind().charAt(i)) {
                 correct[i] = String.valueOf(str.charAt(i));
             }
         }
@@ -144,14 +149,13 @@ public class TLModel extends Observable {
         return correct;
     }
 
-    public boolean isCorrectWord(String str) { return str.equals(wordToFind); }
+    public boolean isCorrectWord(String str) { return str.equals(getWordToFind()); }
 
     public void addLetter(String character) { currentUserWord += character; }
 
     /** Reset the word buffer at the end of a game */
     public void resetWordBuffer() {
-        for (String row : wordsBuffer) {
-            row = "";
-        }
+        Arrays.fill(wordsBuffer, "");
+        indexBuffer = 0;
     }
 }

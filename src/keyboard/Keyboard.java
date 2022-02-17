@@ -79,11 +79,8 @@ public class Keyboard {
                         model.indexBuffer += 1;
                     else if (!won) {
                         lost = true;
-                        model.changeWordToFind();
-                        model.resetWordBuffer();
                         resetKeyboard();
                         model.restartGame();
-                        model.indexBuffer = 0;
                     }
                 } else {
                     // not a valid word
@@ -122,7 +119,7 @@ public class Keyboard {
     }
 
     /** Put the keyboard like when it was created */
-    private void resetKeyboard() {
+    public void resetKeyboard() {
         for (Key[] row : keys) {
             for (Key key : row) {
                 if (key != null && key.getState() != States.SPECIAL) {

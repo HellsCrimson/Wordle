@@ -101,6 +101,7 @@ public class GridPanel extends JPanel {
         for (int i = 0; i < correctPlaceLetters.length; i++) {
             if (correctPlaceLetters[i] != null && correctLetters[i] != null) {
                 indexLetter[i] = i;
+                correctLetters[i] = null;
             } else {
                 indexLetter[i] = -1;
             }
@@ -112,6 +113,15 @@ public class GridPanel extends JPanel {
                         correctLetters[y] = null;
                     }
                 }
+            }
+        }
+    }
+
+    public void resetGrid() {
+        for (JTextField[] row : letterArea) {
+            for (JTextField charArea : row) {
+                charArea.setBackground(Color.WHITE);
+                charArea.setText("");
             }
         }
     }

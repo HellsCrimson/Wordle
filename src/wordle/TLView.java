@@ -84,6 +84,12 @@ public class TLView implements Observer {
         checkWinner();
         checkLost();
 
+        if (model.restarting) {
+            panelDisplay.resetGrid();
+            panelOption.refreshWord();
+            model.restarting = false;
+        }
+
         frame.repaint();
     }
 
@@ -129,9 +135,7 @@ public class TLView implements Observer {
             if (response == JOptionPane.NO_OPTION) {
                 frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
             } else {
-                // TODO restart game
-                // new word to find
-                controller.changeWord();
+                controller.restartGame();
             }
         }
     }
@@ -157,9 +161,7 @@ public class TLView implements Observer {
             if (response == JOptionPane.NO_OPTION) {
                 frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
             } else {
-                // TODO restart game
-                // new word to find
-                controller.changeWord();
+                controller.restartGame();
             }
         }
     }
