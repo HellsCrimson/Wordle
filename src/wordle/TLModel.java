@@ -116,7 +116,7 @@ public class TLModel extends Observable {
 
     /** Check the letter that are correct but can be in the wrong place
      * Return an array with the letters that are correct or null
-     * The letters are in the place where the user put them */ // TODO check this
+     * The letters are in the place where they are in the correct word */
     public String[] correctLetters(String str) {
         String[] correct = new String[wordToFind.length()];
         for (int i = 0; i < str.length(); i++) {
