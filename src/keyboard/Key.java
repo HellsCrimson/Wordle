@@ -17,6 +17,11 @@ public class Key {
         state = States.NOT_USED;
     }
 
+    public Key(String letter, States state) {
+        this.letter = letter;
+        this.state = state;
+    }
+
     public void changeState(States newState) { state = newState; }
 }
 

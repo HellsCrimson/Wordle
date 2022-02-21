@@ -63,8 +63,10 @@ public class Title {
 
     private static String[] titles = {title1, title2, title3, title4, title5, title6};
 
-    public static String getTitle() {
+    public static String[] getTitles() { return titles; }
+
+    public static int getTitleIndex() {
         Random rng = new Random();
-        return titles[rng.nextInt(titles.length)];
+        return rng.nextInt(titles.length);
     }
 }

@@ -17,7 +17,7 @@ public class TLModel extends Observable {
     private String wordToFind;
     private String currentUserWord;
 
-    public String[] wordsBuffer;
+    private String[] wordsBuffer;
     public int indexBuffer;
 
     private String[] correctPlaceLetters;
@@ -64,6 +64,12 @@ public class TLModel extends Observable {
 
         setChanged();
         notifyObservers();
+    }
+
+    public String[] getWordsBuffer() { return wordsBuffer; }
+
+    public void addWordBuffer(String word) {
+        wordsBuffer[indexBuffer] = word;
     }
 
     public Keyboard getKeyboard() { return keyboard; }

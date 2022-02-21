@@ -48,7 +48,7 @@ public class Keyboard {
     }
 
     public void KeyPressed(Key key) {
-        if (Objects.equals(key.getLetter(), "ENTER")) {
+        if (key.getLetter().equals("ENTER")) {
             String userWord = model.getCurrentUserWord();
             if (userWord.length() == 5) {
                 if (model.isValidWord(userWord) || !needBeValid) {
@@ -94,11 +94,11 @@ public class Keyboard {
             String userWord = model.getCurrentUserWord();
             if (userWord.length() > 0) {
                 model.setCurrentUserWord(userWord.substring(0, userWord.length() - 1));
-                model.wordsBuffer[model.indexBuffer] = model.getCurrentUserWord();
+                model.getWordsBuffer()[model.indexBuffer] = model.getCurrentUserWord();
             }
         } else {
             if (model.getCurrentUserWord().length() < 5) {
-                model.wordsBuffer[model.indexBuffer] = model.getCurrentUserWord() + key.getLetter();
+                model.getWordsBuffer()[model.indexBuffer] = model.getCurrentUserWord() + key.getLetter();
                 model.addLetter(key.getLetter());
             }
         }

@@ -56,10 +56,11 @@ public class GridPanel extends JPanel {
         if (indexBuffer > 6)
             indexBuffer = 6;
         for (int y = 0; y < indexBuffer; y++) {
-            for (int x = 0; x < model.wordsBuffer[y].length(); x++) {
-                letterArea[y][x].setText(String.valueOf(model.wordsBuffer[y].charAt(x)));
+            for (int x = 0; x < model.getWordsBuffer()[y].length(); x++) {
+                letterArea[y][x].setText(String.valueOf(model.getWordsBuffer()[y].charAt(x)));
+                letterArea[y][x].setForeground(Color.BLACK);
             }
-            for (int x = model.wordsBuffer[y].length(); x < 5; x++) {
+            for (int x = model.getWordsBuffer()[y].length(); x < 5; x++) {
                 letterArea[y][x].setText("");
             }
         }
