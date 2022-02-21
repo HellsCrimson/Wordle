@@ -1,8 +1,8 @@
-package src.ui;
+package ui;
 
-import src.wordle.TLController;
-import src.wordle.TLModel;
-import src.wordle.TLView;
+import wordle.TLController;
+import wordle.TLModel;
+import wordle.TLView;
 
 import javax.swing.*;
 import java.awt.*;

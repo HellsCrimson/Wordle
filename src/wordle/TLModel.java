@@ -1,8 +1,8 @@
-package src.wordle;
+package wordle;
 
-import src.data.WordList;
-import src.keyboard.Key;
-import src.keyboard.Keyboard;
+import data.WordList;
+import keyboard.Key;
+import keyboard.Keyboard;
 import java.util.*;
 
 public class TLModel extends Observable {
@@ -40,6 +40,7 @@ public class TLModel extends Observable {
         keyboard = new Keyboard(this);
         currentUserWord = "";
         wordsBuffer = new String[6];
+        Arrays.fill(wordsBuffer, "");
         resetWordBuffer();
         getRandom();
         seed = rng.nextLong();

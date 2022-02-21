@@ -1,6 +1,6 @@
-package src.keyboard;
+package keyboard;
 
-import src.wordle.TLModel;
+import wordle.TLModel;
 
 import java.util.Objects;
 

@@ -1,4 +1,4 @@
-package src.keyboard;
+package keyboard;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,9 +1,9 @@
-package src.wordle;
+package wordle;
 
 import java.util.Scanner;
-import src.cli.*;
-import src.keyboard.Key;
-import src.keyboard.States;
+import cli.*;
+import keyboard.Key;
+import keyboard.States;
 
 public class TLCli {
 

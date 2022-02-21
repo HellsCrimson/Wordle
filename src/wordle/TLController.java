@@ -1,7 +1,7 @@
-package src.wordle;
+package wordle;
 
-import src.keyboard.Key;
-import src.keyboard.States;
+import keyboard.Key;
+import keyboard.States;
 
 public class TLController {
 

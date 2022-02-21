@@ -1,7 +1,7 @@
-package src.wordle;
+package wordle;
 
-import src.keyboard.KeyboardListener;
-import src.ui.*;
+import keyboard.KeyboardListener;
+import ui.*;
 
 import java.util.Observer;
 import javax.swing.*;

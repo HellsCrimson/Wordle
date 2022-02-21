@@ -1,4 +1,4 @@
-package src.keyboard;
+package keyboard;
 
 /** The five states of a key of the keyboard */
 public enum States {

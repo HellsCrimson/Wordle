@@ -1,7 +1,7 @@
-package src.keyboard;
+package keyboard;
 
 
-import src.wordle.TLController;
+import wordle.TLController;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;

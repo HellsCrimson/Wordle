@@ -1,9 +1,9 @@
-package src.ui;
+package ui;
 
-import src.keyboard.Keyboard;
-import src.wordle.TLController;
-import src.wordle.TLModel;
-import src.wordle.TLView;
+import keyboard.Keyboard;
+import wordle.TLController;
+import wordle.TLModel;
+import wordle.TLView;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
