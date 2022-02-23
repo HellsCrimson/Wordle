@@ -49,7 +49,7 @@ public class TLView implements Observer {
 
         contentPane.add(new Spacer(10));
 
-        Header header = new Header("WORDLE");
+        Header header = new Header("WORDLE", model);
         contentPane.add(header);
 
         panelDisplay = new GridPanel(model, controller, this);

@@ -62,18 +62,18 @@ public class Keyboard {
 
                     setRemainingWrongs(correctLetters, correctPlaceLetters);
 
-                    if (model.isCorrectWord(userWord))
+                    if (model.isCorrectWord(userWord)) {
                         won = true;
+                        model.getStatWriter().addData(true, model.indexBuffer);
+                    }
 
                     model.setCurrentUserWord("");
                     model.changeEnterPressed();
+                    model.indexBuffer += 1;
 
-                    if (model.indexBuffer <= 5)
-                        model.indexBuffer += 1;
-                    else if (!won) {
+                    if (!won && model.indexBuffer == 6) {
+                        model.getStatWriter().addData(false, -1);
                         lost = true;
-                        resetKeyboard();
-                        model.restartGame();
                     }
                 } else {
                     // not a valid word

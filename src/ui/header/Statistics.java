@@ -1,17 +1,17 @@
 package ui.header;
 
+import data.StatsWriter;
+import wordle.TLModel;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.Scanner;
 
 public class Statistics extends JButton {
+
+    private TLModel model;
 
     private int played;
     private int win;
@@ -19,7 +19,8 @@ public class Statistics extends JButton {
     private int maxStreak;
     private int[] guesses = new int[6];;
 
-    public Statistics() {
+    public Statistics(TLModel model) {
+        this.model = model;
         // Free Icon from Awesome Fonts
         Icon icon = new ImageIcon("resources/icons/square-poll-vertical-solid-resized.png", "Statistics");
         setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -28,7 +29,8 @@ public class Statistics extends JButton {
         setPreferredSize(new Dimension(20, 23));
         Arrays.fill(guesses, 0);
         addActionListener((ActionEvent e) -> {
-            getStatFromFile();
+            model.getStatWriter().getStatFromFile();
+            loadData();
             JOptionPane.showMessageDialog(null, createMessage(), "Statistics", JOptionPane.PLAIN_MESSAGE);
         });
     }
@@ -40,11 +42,14 @@ public class Statistics extends JButton {
         constraints.gridy = 0;
         constraints.gridx = 0;
 
-        Title title = new Title("Statistics", 30);
+        Title title = new Title("STATISTICS", 20);
         panel.add(title, constraints);
         constraints.gridy += 1;
 
         panel.add(getStats(), constraints);
+        constraints.gridy += 1;
+
+        panel.add(new Title("GUESS DISTRIBUTION", 20), constraints);
         constraints.gridy += 1;
 
         panel.add(getGuessDistrib(), constraints);
@@ -95,8 +100,13 @@ public class Statistics extends JButton {
         c.gridx = 0;
         c.gridy = 0;
 
-        for (int guess : guesses) {
-            JTextField textPane = new JTextField(String.valueOf(guess));
+        for (int i = 0; i < guesses.length; i++) {
+            JTextField nbGuess = new JTextField((i + 1) + ": ");
+            nbGuess.setBorder(null);
+            nbGuess.setEditable(false);
+            nbGuess.setBackground(null);
+
+            JTextField textPane = new JTextField(String.valueOf(guesses[i]));
             textPane.setBorder(null);
             textPane.setEditable(false);
             textPane.setBackground(null);
@@ -105,8 +115,10 @@ public class Statistics extends JButton {
             progessBar.setValue(Integer.parseInt(textPane.getText()));
 
             c.gridx = 0;
-            distrib.add(textPane, c);
+            distrib.add(nbGuess, c);
             c.gridx = 1;
+            distrib.add(textPane, c);
+            c.gridx = 2;
             distrib.add(progessBar, c);
             c.gridy += 1;
         }
@@ -114,44 +126,12 @@ public class Statistics extends JButton {
         return distrib;
     }
 
-    private void getStatFromFile() {
-        try {
-            File statFile = new File("resources/stats.txt");
-            Scanner myReader = new Scanner(statFile);
-            int index = 0;
-            while (myReader.hasNextLine()) {
-                String data = myReader.nextLine();
-                switch (index) {
-                    case 0 -> played = Integer.parseInt(data);
-                    case 1 -> win = Integer.parseInt(data);
-                    case 2 -> streak = Integer.parseInt(data);
-                    case 3 -> maxStreak = Integer.parseInt(data);
-                    default -> guesses[index - 4] = Integer.parseInt(data);
-                }
-                index++;
-            }
-            myReader.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("An error occurred while reading the file.");
-            e.printStackTrace();
-        }
-
-    }
-
-    private void setStatInFile() {
-        // TODO pass the model to add in the file the values
-        try {
-            FileWriter statFile = new FileWriter("resources/stats.txt");
-            statFile.write(played + "\n");
-            statFile.write(win + "\n");
-            statFile.write(streak + "\n");
-            statFile.write(maxStreak + "\n");
-            for (int guess : guesses)
-                statFile.write(guess + "\n");
-            statFile.close();
-        } catch (IOException e) {
-            System.out.println("An error occurred while writing in the file.");
-            e.printStackTrace();
-        }
+    private void loadData() {
+        StatsWriter sw = model.getStatWriter();
+        played = sw.getPlayed();
+        win = sw.getWin();
+        streak = sw.getStreak();
+        maxStreak = sw.getMaxStreak();
+        guesses = sw.getGuesses();
     }
 }

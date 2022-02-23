@@ -1,5 +1,6 @@
 package wordle;
 
+import data.StatsWriter;
 import data.WordList;
 import keyboard.Key;
 import keyboard.Keyboard;
@@ -8,6 +9,7 @@ import java.util.*;
 public class TLModel extends Observable {
 
     private Keyboard keyboard;
+    private StatsWriter statsWriter;
 
     private boolean isFixedWord = false;
     private final String fixedWord = "ROGER";
@@ -45,6 +47,7 @@ public class TLModel extends Observable {
         getRandom();
         seed = rng.nextLong();
         findNewWord();
+        statsWriter = new StatsWriter();
     }
 
     /** Send the key press event to the keyboard
@@ -157,4 +160,6 @@ public class TLModel extends Observable {
         Arrays.fill(wordsBuffer, "");
         indexBuffer = 0;
     }
+
+    public StatsWriter getStatWriter() { return statsWriter; }
 }
