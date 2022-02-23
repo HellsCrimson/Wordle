@@ -117,42 +117,35 @@ public class TLModel extends Observable {
     }
 
     private void loadWords() {
-        wordListAnswer = new WordList("src/resources/common.txt");
-        possibleWord = new WordList("src/resources/words.txt");
+        wordListAnswer = new WordList("resources/common.txt");
+        possibleWord = new WordList("resources/words.txt");
     }
 
     public boolean isValidWord(String str) {
         return (wordListAnswer.search(str) >= 0) || (possibleWord.search(str) >= 0);
     }
 
-    /** Check the letter that are correct but can be in the wrong place
-     * Return an array with the letters that are correct or null
+    /** Check the letter that are correct
+     * Set an array with the letters that are correct or null
+     * And Set an array with the letters that are in the correct place or null
      * The letters are in the place where they are in the correct word */
-    public String[] correctLetters(String str) {
+    public void correctLetters(String str) {
         String[] correct = new String[getWordToFind().length()];
+        String[] correctPlace = new String[getWordToFind().length()];
         for (int i = 0; i < str.length(); i++) {
-            for (int j = 0; j < getWordToFind().length(); j++) {
-                if (str.charAt(i) == getWordToFind().charAt(j)) {
-                    correct[i] = String.valueOf(str.charAt(i));
-                    break;
+            if (str.charAt(i) == wordToFind.charAt(i))
+                correctPlace[i] = String.valueOf(str.charAt(i));
+            else {
+                for (int j = 0; j < getWordToFind().length(); j++) {
+                    if (str.charAt(i) == getWordToFind().charAt(j) && str.charAt(j) != getWordToFind().charAt(j)) {
+                        correct[i] = String.valueOf(str.charAt(i));
+                        break;
+                    }
                 }
             }
         }
         correctLetters = correct;
-        return correct;
-    }
-
-    /** Check the letter that are correct and in the correct place
-     * Return an array with the letters that are correct or null */
-    public String[] correctPlaceLetters(String str) {
-        String[] correct = new String[getWordToFind().length()];
-        for (int i = 0; i < str.length(); i++) {
-            if (str.charAt(i) == getWordToFind().charAt(i)) {
-                correct[i] = String.valueOf(str.charAt(i));
-            }
-        }
-        correctPlaceLetters = correct;
-        return correct;
+        correctPlaceLetters = correctPlace;
     }
 
     public boolean isCorrectWord(String str) { return str.equals(getWordToFind()); }

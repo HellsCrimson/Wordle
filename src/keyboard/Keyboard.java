@@ -2,11 +2,9 @@ package keyboard;
 
 import wordle.TLModel;
 
-import java.util.Objects;
-
 public class Keyboard {
 
-    private TLModel model;
+    private final TLModel model;
 
     public boolean won = false;
     public boolean lost = false;
@@ -17,10 +15,10 @@ public class Keyboard {
 
     private Key[][] keys;
     private final String[][] keysAvalable = new String[][] {
-        {"Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"},
-        {"A", "S", "D", "F", "G", "H", "J", "K", "L"},
-        {"ENTER", "Z", "X", "C", "V", "B", "N", "M", "DELETE"}
-    };
+            {"Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"},
+            {"A", "S", "D", "F", "G", "H", "J", "K", "L"},
+            {"ENTER", "Z", "X", "C", "V", "B", "N", "M", "DELETE"}
+    };;
 
     public Key[][] getKeys() { return keys; }
 
@@ -52,23 +50,18 @@ public class Keyboard {
             String userWord = model.getCurrentUserWord();
             if (userWord.length() == 5) {
                 if (model.isValidWord(userWord) || !needBeValid) {
-                    String[] correctLetters = model.correctLetters(userWord);
+                    model.correctLetters(userWord);
+                    String[] correctLetters = model.getCorrectLetters();
+                    String[] correctPlaceLetters = model.getCorrectPlaceLetters();
                     for (String correctLetter : correctLetters) {
                         changeKeyState(correctLetter, States.WRONG_PLACE);
                     }
-                    correctLetters = model.correctPlaceLetters(userWord);
-                    for (String correctLetter : correctLetters) {
+                    for (String correctLetter : correctPlaceLetters) {
                         changeKeyState(correctLetter, States.RIGHT);
                     }
-                    for (int i = 0; i < userWord.length(); i++) {
-                        for (Key[] rowKey : keys) {
-                            for (Key currKey : rowKey) {
-                                if (currKey != null && currKey.getLetter().equals(String.valueOf(userWord.charAt(i))) && currKey.getState() == States.NOT_USED) {
-                                    changeKeyState(String.valueOf(userWord.charAt(i)), States.WRONG);
-                                }
-                            }
-                        }
-                    }
+
+                    setRemainingWrongs(correctLetters, correctPlaceLetters);
+
                     if (model.isCorrectWord(userWord))
                         won = true;
 
@@ -104,13 +97,29 @@ public class Keyboard {
         }
     }
 
+    private void setRemainingWrongs(String[] correctLetters, String[] correctPlaceLetters) {
+        for (int i = 0; i < model.getCurrentUserWord().length(); i++) {
+            String currLetter = String.valueOf(model.getCurrentUserWord().charAt(i));
+            if (valueNotExist(correctLetters, currLetter) && valueNotExist(correctPlaceLetters, currLetter))
+                changeKeyState(currLetter, States.WRONG);
+        }
+    }
+
+    private boolean valueNotExist(String[] arr, String value) {
+        for (String letter : arr) {
+            if (letter != null && letter.equals(value))
+                return false;
+        }
+        return true;
+    }
+
     private void changeKeyState(String character, States newState) {
         if (character == null)
             return;
         for (Key[] rowKey : keys) {
             for (Key key : rowKey) {
                 if (key != null && key.getLetter().equals(character)) {
-                    if (key.getState() != States.RIGHT)
+                    if (key.getState() != States.SPECIAL)
                         key.changeState(newState);
                     return;
                 }

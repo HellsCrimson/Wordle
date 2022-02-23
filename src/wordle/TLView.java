@@ -2,6 +2,7 @@ package wordle;
 
 import keyboard.KeyboardListener;
 import ui.*;
+import ui.header.Title;
 
 import java.util.Observer;
 import javax.swing.*;
@@ -48,8 +49,8 @@ public class TLView implements Observer {
 
         contentPane.add(new Spacer(10));
 
-        Title title = new Title("WORDLE");
-        contentPane.add(title);
+        Header header = new Header("WORDLE");
+        contentPane.add(header);
 
         panelDisplay = new GridPanel(model, controller, this);
         contentPane.add(panelDisplay);

@@ -58,7 +58,6 @@ public class GridPanel extends JPanel {
         for (int y = 0; y < indexBuffer; y++) {
             for (int x = 0; x < model.getWordsBuffer()[y].length(); x++) {
                 letterArea[y][x].setText(String.valueOf(model.getWordsBuffer()[y].charAt(x)));
-                letterArea[y][x].setForeground(Color.BLACK);
             }
             for (int x = model.getWordsBuffer()[y].length(); x < 5; x++) {
                 letterArea[y][x].setText("");
@@ -77,9 +76,9 @@ public class GridPanel extends JPanel {
 
         for (int i = 0; i < letterArea[currIndex].length; i++) { // All line in gray
             letterArea[currIndex][i].setBackground(Color.DARK_GRAY);
+            letterArea[currIndex][i].setForeground(Color.WHITE);
         }
 
-        cleanArr(correctPlaceLetters, correctLetters);
         colorLine(correctLetters, currIndex, Color.YELLOW);
         colorLine(correctPlaceLetters, currIndex, Color.GREEN);
     }
@@ -90,29 +89,7 @@ public class GridPanel extends JPanel {
         for (int i = 0; i < correctLetters.length; i++) {
             if (correctLetters[i] != null) {
                 letterArea[index][i].setBackground(color);
-            }
-        }
-    }
-
-    /** Compare the array of correct letters with the one where the letter are in the correct place
-     * For each letter in the correct place one letter is removed from the other array
-     * If a letter is also in both array at the same place, then it is removed from the correct letters */
-    private void cleanArr(String[] correctPlaceLetters, String[] correctLetters) {
-        int[] indexLetter = new int[correctPlaceLetters.length];
-        for (int i = 0; i < correctPlaceLetters.length; i++) {
-            if (correctPlaceLetters[i] != null && correctLetters[i] != null) {
-                indexLetter[i] = i;
-            } else {
-                indexLetter[i] = -1;
-            }
-        }
-        for (int i : indexLetter) {
-            if (i != -1) {
-                for (int y = 0; y < correctLetters.length; y++) {
-                    if (indexLetter[y] == -1 && correctLetters[y] != null && correctLetters[y].equals(correctPlaceLetters[i])) {
-                        correctLetters[y] = null;
-                    }
-                }
+                letterArea[index][i].setForeground(Color.BLACK);
             }
         }
     }
@@ -121,6 +98,7 @@ public class GridPanel extends JPanel {
         for (JTextField[] row : letterArea) {
             for (JTextField charArea : row) {
                 charArea.setBackground(Color.WHITE);
+                charArea.setForeground(Color.BLACK);
                 charArea.setText("");
             }
         }
