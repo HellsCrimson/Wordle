@@ -35,7 +35,8 @@ public class OptionPanel extends JPanel {
     }
 
     private void createSetWordPanel(GridBagConstraints constraints, KeyboardListener keyboardListener) {
-        JCheckBox setWord = new JCheckBox("Set Answer");
+        JCheckBox setWord = new JCheckBox("Random Answer");
+        setWord.setSelected(true);
         setWord.addActionListener((ActionEvent e) -> {
             model.setIsFixedWord(!model.isFixedWord());
             refreshWord();
@@ -60,6 +61,7 @@ public class OptionPanel extends JPanel {
                 answerField.setText(model.getWordToFind());
             else
                 answerField.setText("");
+            model.changeShowAnswer();
         });
         showAnswer.addKeyListener(keyboardListener);
         showAnswer.setFocusTraversalKeysEnabled(false);
@@ -75,31 +77,11 @@ public class OptionPanel extends JPanel {
         JCheckBox falseWord = new JCheckBox("Error On False Word");
         falseWord.setSelected(true);
         falseWord.addActionListener((ActionEvent e) -> {
-            model.getKeyboard().needBeValid = !model.getKeyboard().needBeValid;
+            model.changeNeedBeValid();
         });
         falseWord.addKeyListener(keyboardListener);
         falseWord.setFocusTraversalKeysEnabled(false);
         add(falseWord, constraints);
-    }
-
-    private void createSeedPanel(GridBagConstraints constraints) {
-        JPanel seedPanel = new JPanel();
-        JTextField seedText = new JTextField("The seed is:");
-        seedText.setEditable(false);
-        seedText.setBorder(null);
-        seedPanel.add(seedText);
-        JTextField seedArea = new JTextField(String.valueOf(model.getSeed()));
-
-        seedArea.addActionListener((ActionEvent e) -> {
-            try {
-                System.out.println(Integer.parseInt(seedArea.getText()));
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-            // TODO set the new seed
-        });
-        seedPanel.add(seedArea);
-        add(seedPanel, constraints);
     }
 
     public void refreshWord() {

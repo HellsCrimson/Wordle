@@ -11,8 +11,6 @@ public class Keyboard {
     public boolean needLetter = false;
     public boolean notValid = false;
 
-    public boolean needBeValid = true;
-
     private Key[][] keys;
     private final String[][] keysAvalable = new String[][] {
             {"Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"},
@@ -49,7 +47,7 @@ public class Keyboard {
         if (key.getLetter().equals("ENTER")) {
             String userWord = model.getCurrentUserWord();
             if (userWord.length() == 5) {
-                if (model.isValidWord(userWord) || !needBeValid) {
+                if (model.isValidWord(userWord) || !model.getNeedBeValid()) {
                     model.correctLetters(userWord);
                     String[] correctLetters = model.getCorrectLetters();
                     String[] correctPlaceLetters = model.getCorrectPlaceLetters();

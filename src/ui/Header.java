@@ -1,8 +1,8 @@
 package ui;
 
-import ui.header.HowPlay;
-import ui.header.Statistics;
-import ui.header.Title;
+import ui.headerElements.HowPlay;
+import ui.headerElements.Statistics;
+import ui.headerElements.Title;
 import wordle.TLModel;
 
 import javax.swing.*;

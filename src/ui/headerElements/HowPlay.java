@@ -1,4 +1,4 @@
-package ui.header;
+package ui.headerElements;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

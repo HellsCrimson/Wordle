@@ -11,8 +11,10 @@ public class TLModel extends Observable {
     private Keyboard keyboard;
     private StatsWriter statsWriter;
 
+    private boolean needBeValid = true;
+    private boolean showAnswer = false;
     private boolean isFixedWord = false;
-    private final String fixedWord = "ROGER";
+    private static final String fixedWord = "ROGER";
 
     private WordList wordListAnswer;
     private WordList possibleWord;
@@ -51,7 +53,8 @@ public class TLModel extends Observable {
     }
 
     /** Send the key press event to the keyboard
-     * notify the observers to call the update */
+     * notify the observers to call the update
+     * @param key is a valid non-null key */
     public void keyPressed(Key key) {
         keyboard.KeyPressed(key);
         setChanged();
@@ -60,15 +63,25 @@ public class TLModel extends Observable {
 
     /** Reset the attribute to be ready for another game */
     public void restartGame() {
+        String oldWordToFind = getWordToFind();
+
         currentUserWord = "";
         changeWordToFind();
         resetWordBuffer();
         keyboard.resetKeyboard();
         restarting = true;
 
+        assert !oldWordToFind.equals(wordToFind) || isFixedWord():"word must have changed or the word is set";
+
         setChanged();
         notifyObservers();
     }
+
+    public void changeNeedBeValid() { needBeValid = !needBeValid; }
+
+    public boolean getNeedBeValid() { return needBeValid; }
+
+    public void changeShowAnswer() { showAnswer = !showAnswer; }
 
     public String[] getWordsBuffer() { return wordsBuffer; }
 
@@ -122,9 +135,14 @@ public class TLModel extends Observable {
     private void loadWords() {
         wordListAnswer = new WordList("resources/common.txt");
         possibleWord = new WordList("resources/words.txt");
+
+        assert wordListAnswer!=null && possibleWord!=null:"both data structure must be loaded (not null)";
     }
 
+    /** @param str is a 5 capital letter word */
     public boolean isValidWord(String str) {
+        assert str!=null:"the word to find must not be null";
+
         return (wordListAnswer.search(str) >= 0) || (possibleWord.search(str) >= 0);
     }
 
@@ -133,6 +151,8 @@ public class TLModel extends Observable {
      * And Set an array with the letters that are in the correct place or null
      * The letters are in the place where they are in the correct word */
     public void correctLetters(String str) {
+        assert str!=null:"string must not be null";
+
         String[] correct = new String[getWordToFind().length()];
         String[] correctPlace = new String[getWordToFind().length()];
         for (int i = 0; i < str.length(); i++) {
@@ -157,6 +177,7 @@ public class TLModel extends Observable {
 
     /** Reset the word buffer at the end of a game */
     public void resetWordBuffer() {
+        assert wordsBuffer!=null:"word buffer must be initialised";
         Arrays.fill(wordsBuffer, "");
         indexBuffer = 0;
     }

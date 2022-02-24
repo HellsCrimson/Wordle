@@ -2,7 +2,6 @@ package wordle;
 
 import keyboard.KeyboardListener;
 import ui.*;
-import ui.header.Title;
 
 import java.util.Observer;
 import javax.swing.*;

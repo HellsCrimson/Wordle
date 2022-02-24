@@ -3,6 +3,7 @@ package cli;
 import java.util.Random;
 
 public class Title {
+    /** ASCII art provided by: https://patorjk.com/software/taag/ */
     private static String title1 = " ____      ____   ___   _______     ______   _____     ________  \n" +
                             "|_  _|    |_  _|.'   `.|_   __ \\   |_   _ `.|_   _|   |_   __  | \n" +
                             "  \\ \\  /\\  / / /  .-.  \\ | |__) |    | | `. \\ | |       | |_ \\_| \n" +

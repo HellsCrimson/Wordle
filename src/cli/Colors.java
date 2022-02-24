@@ -4,6 +4,8 @@ import java.util.Random;
 
 public class Colors {
 
+    /** All possible color from: https://stackoverflow.com/a/45444716 */
+
     public static final String RESET = "\033[0m";  // Text Reset
 
     // Regular Colors

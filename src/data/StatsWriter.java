@@ -62,6 +62,11 @@ public class StatsWriter {
     public void getStatFromFile() {
         try {
             File statFile = new File("resources/stats.txt");
+
+            if (statFile.createNewFile()) {
+                setup();
+            }
+
             Scanner myReader = new Scanner(statFile);
             int index = 0;
             while (myReader.hasNextLine()) {
@@ -79,6 +84,8 @@ public class StatsWriter {
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred while reading the file.");
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }
@@ -95,5 +102,21 @@ public class StatsWriter {
         }
         played++;
         setStatInFile();
+    }
+
+    private void setup() {
+        try {
+            FileWriter statFile = new FileWriter("resources/stats.txt");
+            statFile.write(0 + "\n");
+            statFile.write(0 + "\n");
+            statFile.write(0 + "\n");
+            statFile.write(0 + "\n");
+            for (int i = 0; i < guesses.length; i++)
+                statFile.write(0 + "\n");
+            statFile.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred while writing in the file.");
+            e.printStackTrace();
+        }
     }
 }

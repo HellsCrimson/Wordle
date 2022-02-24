@@ -8,7 +8,6 @@ import keyboard.States;
 public class TLCli {
 
     private final TLModel model;
-    private final TLController controller;
 
     private final String GRID_COLOR = Colors.RED_BRIGHT;
     private final String WRONG_COLOR = Colors.WHITE;
@@ -17,9 +16,8 @@ public class TLCli {
 
     private boolean ended = false;
 
-    public TLCli(TLModel model, TLController controller) {
+    public TLCli(TLModel model) {
         this.model = model;
-        this.controller = controller;
     }
 
     public void startGame() {
@@ -39,7 +37,7 @@ public class TLCli {
 
             model.setCurrentUserWord(userWord.toUpperCase());
             model.addWordBuffer(model.getCurrentUserWord());
-            controller.keyPressed(new Key("ENTER", States.SPECIAL));
+            model.keyPressed(new Key("ENTER", States.SPECIAL));
         }
     }
 
