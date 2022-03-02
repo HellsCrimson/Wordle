@@ -71,12 +71,17 @@ public class StatsWriter {
             int index = 0;
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
-                switch (index) {
-                    case 0 -> played = Integer.parseInt(data);
-                    case 1 -> win = Integer.parseInt(data);
-                    case 2 -> streak = Integer.parseInt(data);
-                    case 3 -> maxStreak = Integer.parseInt(data);
-                    default -> guesses[index - 4] = Integer.parseInt(data);
+                try {
+                    switch (index) {
+                        case 0 -> played = Integer.parseInt(data);
+                        case 1 -> win = Integer.parseInt(data);
+                        case 2 -> streak = Integer.parseInt(data);
+                        case 3 -> maxStreak = Integer.parseInt(data);
+                        default -> guesses[index - 4] = Integer.parseInt(data);
+                    }
+                } catch (Exception e) {
+                    resetStats();
+                    return;
                 }
                 index++;
             }
@@ -118,5 +123,15 @@ public class StatsWriter {
             System.out.println("An error occurred while writing in the file.");
             e.printStackTrace();
         }
+    }
+
+    private void resetStats() {
+        played = 0;
+        win = 0;
+        streak = 0;
+        maxStreak = 0;
+        Arrays.fill(guesses, 0);
+        setStatInFile();
+        getStatFromFile();
     }
 }

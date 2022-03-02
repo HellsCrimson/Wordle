@@ -146,27 +146,29 @@ public class TLModel extends Observable {
         return (wordListAnswer.search(str) >= 0) || (possibleWord.search(str) >= 0);
     }
 
-    /** Check the letter that are correct
+    /** Check the letter that are correct thanks to a histogram
      * Set an array with the letters that are correct or null
      * And Set an array with the letters that are in the correct place or null
      * The letters are in the place where they are in the correct word */
     public void correctLetters(String str) {
-        assert str!=null:"string must not be null";
-
+        int[] histogram = new int[26];
         String[] correct = new String[getWordToFind().length()];
         String[] correctPlace = new String[getWordToFind().length()];
+
+        for (int i = 0; i < getWordToFind().length(); i++) {
+            histogram[getWordToFind().charAt(i) - 65]++;
+        }
         for (int i = 0; i < str.length(); i++) {
-            if (str.charAt(i) == wordToFind.charAt(i))
-                correctPlace[i] = String.valueOf(str.charAt(i));
-            else {
-                for (int j = 0; j < getWordToFind().length(); j++) {
-                    if (str.charAt(i) == getWordToFind().charAt(j) && str.charAt(j) != getWordToFind().charAt(j)) {
-                        correct[i] = String.valueOf(str.charAt(i));
-                        break;
-                    }
+            if (histogram[str.charAt(i) - 65] != 0) {
+                if (str.charAt(i) == getWordToFind().charAt(i)) {
+                    correctPlace[i] = String.valueOf(str.charAt(i));
+                } else {
+                    correct[i] = String.valueOf(str.charAt(i));
                 }
+                histogram[str.charAt(i) - 65]--;
             }
         }
+
         correctLetters = correct;
         correctPlaceLetters = correctPlace;
     }
