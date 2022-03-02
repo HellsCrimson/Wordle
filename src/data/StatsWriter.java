@@ -92,7 +92,6 @@ public class StatsWriter {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public void addData(boolean won, int nbTries) {

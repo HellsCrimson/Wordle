@@ -2,6 +2,7 @@ package wordle;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Scanner;
 import cli.*;
 import keyboard.Key;
@@ -11,12 +12,12 @@ public class TLCli {
 
     private final TLModel model;
 
-    private final String GRID_COLOR = Colors.RED_BRIGHT;
-    private final String WRONG_COLOR = Colors.WHITE;
-    private final String CORRECT_PLACE_COLOR = Colors.GREEN;
-    private final String CORRECT_COLOR = Colors.YELLOW;
+    private static final String GRID_COLOR = Colors.RED_BRIGHT;
+    private static final String WRONG_COLOR = Colors.WHITE;
+    private static final String CORRECT_PLACE_COLOR = Colors.GREEN;
+    private static final String CORRECT_COLOR = Colors.YELLOW;
 
-    private ArrayList<String> notUsed = new ArrayList<>();
+    private final ArrayList<String> notUsed = new ArrayList<>();
 
     private int[][] board;
     private int nbTries;
@@ -41,13 +42,16 @@ public class TLCli {
             printLine(Colors.RED + Title.getTitles()[titleIndex] + Colors.RESET);
             printGrid();
             printAvailableKeys();
-            if (model.isShowAnswer())
-                printLine("Correct word: " + model.getWordToFind());
+            printLine("");
+            if (model.isShowAnswer()) {
+                printLine("Correct word: " + Colors.RED + model.getWordToFind() + Colors.RESET);
+                printLine("");
+            }
 
             do {
                 print("Please enter a " + Colors.RED_UNDERLINED + "five" + Colors.RESET + " letter word: ");
                 userWord = scan.next();
-            } while (userWord.length() != 5);
+            } while (userWord.length() != 5 || !userWord.matches("[a-zA-Z]*"));
             printLine("");
 
             nbTries++;
@@ -136,15 +140,16 @@ public class TLCli {
                 }
             }
         }
-        displayKeys(notUsed, "Not Used");
+        displayKeys(notUsed);
     }
 
-    private void displayKeys(ArrayList<String> list, String name) {
-        printLine(name + ":");
+    private void displayKeys(ArrayList<String> list) {
+        printLine("Not Used:");
+        Collections.sort(list);
         if (list.size() > 0) {
             drawUnderline(list.size() * 4 + 1);
-            for (int i = 0; i < list.size(); i++) {
-                print(GRID_COLOR + "| " + Colors.RESET + list.get(i) + " ");
+            for (String letter : list) {
+                print(GRID_COLOR + "| " + Colors.RESET + letter + " ");
             }
             printLine(GRID_COLOR + "|" + Colors.RESET);
             drawUnderline(list.size() * 4 + 1);
@@ -173,20 +178,9 @@ public class TLCli {
         return letter + Colors.RESET;
     }
 
-    private void availableLetters() {
-        Key[][] keys = model.getKeyboard().getKeys();
-        for (int y = 0; y < keys.length; y++) {
-            for (int x = 0; x < keys[y].length; x++) {
-                if (keys[y][x] != null && keys[y][x].getState() != States.SPECIAL) {
-                    // TODO get available letters
-                }
-            }
-        }
-    }
-
     public void askFlags() {
         Scanner scan = new Scanner(System.in);
-        model.setNeedBeValid(askFlag(scan, "Should a valid word be needed to play? (Yes/No) "));
+        model.setNeedBeValid(askFlag(scan, "Should a valid word be needed? (Yes/No) "));
         model.setShowAnswer(askFlag(scan, "Should the valid word be shown? (Yes/No) "));
         model.setIsFixedWord(askFlag(scan, "Should the word be set? (Yes/No) "));
     }
@@ -226,5 +220,6 @@ public class TLCli {
         for (int[] row : board)
             Arrays.fill(row, -1);
         nbTries = 0;
+        notUsed.clear();
     }
 }

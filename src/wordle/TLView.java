@@ -78,6 +78,7 @@ public class TLView implements Observer {
         if (model.getEnterPressed()) {
             panelDisplay.colorGridBackground();
             model.changeEnterPressed();
+            panelOption.setRestartButton(true);
         }
 
         checkWinner();
@@ -86,6 +87,7 @@ public class TLView implements Observer {
         if (model.restarting) {
             panelDisplay.resetGrid();
             panelOption.refreshWord();
+            panelOption.setRestartButton(false);
             model.restarting = false;
         }
 

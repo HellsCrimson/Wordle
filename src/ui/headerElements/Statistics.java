@@ -70,7 +70,7 @@ public class Statistics extends JButton {
         stats.add(played, c);
         c.gridx++;
 
-        JTextField winRate = new JTextField("Win Rate " + (int)(((double)this.win / (double)this.played) * 100) + "%");
+        JTextField winRate = new JTextField("Win Rate " + (int)(safeDiv(this.win, this.played) * 100) + "%");
         setParameter(winRate);
         stats.add(winRate, c);
         c.gridx++;
@@ -85,6 +85,12 @@ public class Statistics extends JButton {
         stats.add(maxStreak, c);
 
         return stats;
+    }
+
+    private double safeDiv(double a, double b) {
+        if (b == 0)
+            return 0;
+        return a / b;
     }
 
     private void setParameter(JTextField played) {

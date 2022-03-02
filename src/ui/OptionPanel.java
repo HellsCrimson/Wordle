@@ -16,6 +16,7 @@ public class OptionPanel extends JPanel {
     private final TLView view;
 
     private JTextField answerField;
+    private JButton restartButton;
 
     public OptionPanel(TLModel model, TLController controller, TLView view, KeyboardListener keyboardListener) {
         this.model = model;
@@ -32,6 +33,8 @@ public class OptionPanel extends JPanel {
         createAnswerPanel(constraint, keyboardListener);
         constraint.gridx = 4;
         createSetWordPanel(constraint, keyboardListener);
+        constraint.gridx = 6;
+        createRestartButton(constraint, keyboardListener);
     }
 
     private void createSetWordPanel(GridBagConstraints constraints, KeyboardListener keyboardListener) {
@@ -82,6 +85,21 @@ public class OptionPanel extends JPanel {
         falseWord.addKeyListener(keyboardListener);
         falseWord.setFocusTraversalKeysEnabled(false);
         add(falseWord, constraints);
+    }
+
+    private void createRestartButton(GridBagConstraints constraints, KeyboardListener keyboardListener) {
+        restartButton = new JButton("Restart");
+        restartButton.setEnabled(false);
+        restartButton.addActionListener((ActionEvent e) -> {
+            model.restartGame();
+        });
+        restartButton.addKeyListener(keyboardListener);
+        restartButton.setFocusTraversalKeysEnabled(false);
+        add(restartButton, constraints);
+    }
+
+    public void setRestartButton(boolean state) {
+        restartButton.setEnabled(state);
     }
 
     public void refreshWord() {
