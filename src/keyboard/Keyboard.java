@@ -6,8 +6,6 @@ public class Keyboard {
 
     private final TLModel model;
 
-    public boolean won = false;
-    public boolean lost = false;
     public boolean needLetter = false;
     public boolean notValid = false;
 
@@ -61,7 +59,7 @@ public class Keyboard {
                     setRemainingWrongs(correctLetters, correctPlaceLetters);
 
                     if (model.isCorrectWord(userWord)) {
-                        won = true;
+                        model.setWon(true);
                         model.getStatWriter().addData(true, model.indexBuffer);
                     }
 
@@ -69,9 +67,9 @@ public class Keyboard {
                     model.changeEnterPressed();
                     model.indexBuffer += 1;
 
-                    if (!won && model.indexBuffer == 6) {
+                    if (!model.getWon() && model.indexBuffer == 6) {
                         model.getStatWriter().addData(false, -1);
-                        lost = true;
+                        model.setLost(true);
                     }
                 } else {
                     // not a valid word

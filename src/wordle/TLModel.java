@@ -11,6 +11,9 @@ public class TLModel extends Observable {
     private Keyboard keyboard;
     private StatsWriter statsWriter;
 
+    private boolean won = false;
+    private boolean lost = false;
+
     private boolean needBeValid = true;
     private boolean showAnswer = false;
     private boolean isFixedWord = false;
@@ -29,7 +32,6 @@ public class TLModel extends Observable {
     private boolean enterPressed = false;
 
     private Random rng;
-    private long seed = -1;
 
     public boolean restarting = false;
 
@@ -47,7 +49,6 @@ public class TLModel extends Observable {
         Arrays.fill(wordsBuffer, "");
         resetWordBuffer();
         getRandom();
-        seed = rng.nextLong();
         findNewWord();
         statsWriter = new StatsWriter();
     }
@@ -70,11 +71,41 @@ public class TLModel extends Observable {
         resetWordBuffer();
         keyboard.resetKeyboard();
         restarting = true;
+        won = false;
+        lost = false;
 
         assert !oldWordToFind.equals(wordToFind) || isFixedWord():"word must have changed or the word is set";
 
         setChanged();
         notifyObservers();
+    }
+
+    public void setWon(boolean state) {
+        won = state;
+    }
+
+    public void setLost(boolean state) {
+        lost = state;
+    }
+
+    public boolean getWon() {
+        return won;
+    }
+
+    public boolean getLost() {
+        return lost;
+    }
+
+    public void setNeedBeValid(boolean needBeValid) {
+        this.needBeValid = needBeValid;
+    }
+
+    public void setShowAnswer(boolean showAnswer) {
+        this.showAnswer = showAnswer;
+    }
+
+    public boolean isShowAnswer() {
+        return showAnswer;
     }
 
     public void changeNeedBeValid() { needBeValid = !needBeValid; }
@@ -108,8 +139,6 @@ public class TLModel extends Observable {
             return wordToFind;
         return fixedWord;
     }
-
-    public long getSeed() { return seed; }
 
     public String getCurrentUserWord() { return currentUserWord; }
 

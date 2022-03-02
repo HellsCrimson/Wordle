@@ -118,8 +118,8 @@ public class TLView implements Observer {
      * Ask if the player want to do another game
      * else close the game */
     private void checkWinner() {
-        if (model.getKeyboard().won) {
-            model.getKeyboard().won = false;
+        if (model.getWon()) {
+            model.setWon(false);
             String[] optionButtons = {"Yes", "No"};
             int response = JOptionPane.showOptionDialog(frame,
                     "You won using " + model.indexBuffer + " attempt(s)\n"
@@ -144,8 +144,8 @@ public class TLView implements Observer {
      * Ask if the player want to do another game
      * else close the game */
     private void checkLost() {
-        if (model.getKeyboard().lost) {
-            model.getKeyboard().lost = false;
+        if (model.getLost()) {
+            model.setLost(false);
             String[] optionButtons = {"Yes", "No"};
             int response = JOptionPane.showOptionDialog(frame,
                     "You lost. The correct word was: " + model.getWordToFind() + "\n"
