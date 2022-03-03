@@ -51,8 +51,13 @@ public class TLCli {
             do {
                 print("Please enter a " + Colors.RED_UNDERLINED + "five" + Colors.RESET + " letter word: ");
                 userWord = scan.next();
-            } while (userWord.length() != 5 || !userWord.matches("[a-zA-Z]*"));
+            } while (!userWord.matches("[a-zA-Z]{5}"));
             printLine("");
+
+            if (userWord.equalsIgnoreCase("EPITA")) {
+                printLine(Title.getEasterEgg());
+                printLine("");
+            }
 
             nbTries++;
             model.setCurrentUserWord(userWord.toUpperCase());
