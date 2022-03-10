@@ -14,6 +14,16 @@ public class TLModelTest {
 
     @Test
     public void restartGame() {
+        TLModel model = new TLModel();
+        model.addWordBuffer("test1");
+        model.addWordBuffer("test2");
+
+        String[] expected = new String[model.getWordsBuffer().length];
+        Arrays.fill(expected, "");
+
+        model.restartGame();
+
+        assertArrayEquals(model.getWordsBuffer(), expected);
     }
 
     @Test
@@ -26,10 +36,12 @@ public class TLModelTest {
 
     @Test
     public void addWordBuffer() {
-    }
-
-    @Test
-    public void getKeyboard() {
+        TLModel model = new TLModel();
+        model.addWordBuffer("test");
+        String[] expected = new String[6];
+        Arrays.fill(expected, "");
+        expected[0] = "test";
+        assertArrayEquals(model.getWordsBuffer(), expected);
     }
 
     @Test
@@ -37,59 +49,39 @@ public class TLModelTest {
     }
 
     @Test
-    public void getEnterPressed() {
-    }
-
-    @Test
-    public void getCorrectPlaceLetters() {
-    }
-
-    @Test
-    public void getCorrectLetters() {
-    }
-
-    @Test
-    public void isFixedWord() {
-    }
-
-    @Test
-    public void setIsFixedWord() {
-    }
-
-    @Test
-    public void getWordToFind() {
-    }
-
-    @Test
-    public void getSeed() {
-    }
-
-    @Test
-    public void getCurrentUserWord() {
-    }
-
-    @Test
-    public void setCurrentUserWord() {
-    }
-
-    @Test
-    public void changeWordToFind() {
-    }
-
-    @Test
-    public void isValidWord() {
-    }
-
-    @Test
     public void correctLetters() {
     }
 
     @Test
-    public void correctPlaceLetters() {
+    public void correctPlaceLettersAllTrue() {
+        TLModel model = new TLModel();
+        model.setCurrentUserWord(model.getWordToFind());
+        model.correctLetters(model.getWordToFind());
+        String[] answer = model.getCorrectPlaceLetters();
+
+        String[] expected = new String[answer.length];
+        for (int i = 0; i < expected.length; i++)
+            expected[i] = String.valueOf(model.getCurrentUserWord().charAt(i));
+        assertArrayEquals(answer, expected);
     }
 
     @Test
-    public void isCorrectWord() {
+    public void correctPlaceLettersAllFalse() {
+        TLModel model = new TLModel();
+        for (int i = 'a'; i <= 'z'; i++) {
+            if (model.getWordToFind().charAt(0) != i) {
+                String toTest = "";
+                for (int j = 0; j < 5; j++)
+                    toTest += String.valueOf((char)i);
+                model.setCurrentUserWord(toTest);
+                break;
+            }
+        }
+        model.correctLetters(model.getCurrentUserWord());
+        String[] answer = model.getCorrectPlaceLetters();
+
+        String[] expected = new String[answer.length];
+        assertArrayEquals(answer, expected);
     }
 
     @Test

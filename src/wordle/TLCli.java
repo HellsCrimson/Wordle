@@ -18,6 +18,9 @@ public class TLCli {
     private static final String CORRECT_COLOR = Colors.YELLOW;
 
     private final ArrayList<String> notUsed = new ArrayList<>();
+    private final ArrayList<String> wrong = new ArrayList<>();
+    private final ArrayList<String> wrongPlace = new ArrayList<>();
+    private final ArrayList<String> right = new ArrayList<>();
 
     private int[][] board;
     private int nbTries;
@@ -74,7 +77,7 @@ public class TLCli {
         }
     }
 
-    public static void clearScreen() {
+    public void clearScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
@@ -136,28 +139,42 @@ public class TLCli {
                             if (!notUsed.contains(key.getLetter()))
                                 notUsed.add(key.getLetter());
                             break;
-                        case SPECIAL:
+                        case WRONG_PLACE:
+                            if (!wrongPlace.contains(key.getLetter()))
+                                wrongPlace.add(key.getLetter());
                             break;
-                        default:
+                        case WRONG:
+                            if (!wrong.contains(key.getLetter()))
+                                wrong.add(key.getLetter());
+                            break;
+                        case RIGHT:
                             notUsed.remove(key.getLetter());
+                            if (!right.contains(key.getLetter()))
+                                right.add(key.getLetter());
+                            wrongPlace.remove(key.getLetter());
+                            break;
+                        case SPECIAL:
                             break;
                     }
                 }
             }
         }
-        displayKeys(notUsed);
+        displayKeys(notUsed, "Not Used");
+        displayKeys(right, "Right");
+        displayKeys(wrongPlace, "Wrong Place");
+        displayKeys(wrong, "Wrong");
     }
 
-    private void displayKeys(ArrayList<String> list) {
-        printLine("Not Used:");
+    private void displayKeys(ArrayList<String> list, String category) {
         Collections.sort(list);
         if (list.size() > 0) {
-            drawUnderline(list.size() * 4 + 1);
+            drawUnderline(list.size() * 4 + category.length() + 2);
+            print(category + " ");
             for (String letter : list) {
                 print(GRID_COLOR + "| " + Colors.RESET + letter + " ");
             }
             printLine(GRID_COLOR + "|" + Colors.RESET);
-            drawUnderline(list.size() * 4 + 1);
+            drawUnderline(list.size() * 4 + category.length() + 2);
         }
     }
 

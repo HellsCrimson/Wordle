@@ -41,7 +41,9 @@ public class TLModel extends Observable {
         notifyObservers();
     }
 
-    /** Initialise the model with the basic attributes */
+    /** Initialise the model with the basic attributes
+     * @pre. model's field not initialised
+     * @post. fields are initialised */
     private void initialise() {
         keyboard = new Keyboard(this);
         currentUserWord = "";
@@ -55,14 +57,16 @@ public class TLModel extends Observable {
 
     /** Send the key press event to the keyboard
      * notify the observers to call the update
-     * @param key is a valid non-null key */
+     * @pre. keyboard object is initialised
+     * @post. is old keyboard with one key pressed */
     public void keyPressed(Key key) {
         keyboard.KeyPressed(key);
         setChanged();
         notifyObservers();
     }
 
-    /** Reset the attribute to be ready for another game */
+    /** Reset the attribute to be ready for another game
+     * @pre. */
     public void restartGame() {
         String oldWordToFind = getWordToFind();
 
@@ -157,7 +161,7 @@ public class TLModel extends Observable {
 
     /** Find a new word
      * Only call when the game has already started */
-    public void changeWordToFind() {
+    private void changeWordToFind() {
         wordToFind = wordListAnswer.dataAt(rng.nextInt(wordListAnswer.length));
     }
 
