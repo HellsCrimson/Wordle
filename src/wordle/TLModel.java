@@ -166,8 +166,8 @@ public class TLModel extends Observable {
     }
 
     private void loadWords() {
-        wordListAnswer = new WordList("resources/common.txt");
-        possibleWord = new WordList("resources/words.txt");
+        wordListAnswer = new WordList("../resources/common.txt");
+        possibleWord = new WordList("../resources/words.txt");
 
         assert wordListAnswer!=null && possibleWord!=null:"both data structure must be loaded (not null)";
     }

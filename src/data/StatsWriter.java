@@ -17,6 +17,8 @@ public class StatsWriter {
     private int maxStreak;
     private int[] guesses;
 
+    private String statPath = "../resources/stats.txt";
+
     public int getPlayed() {
         return played;
     }
@@ -45,7 +47,7 @@ public class StatsWriter {
 
     private void setStatInFile() {
         try {
-            FileWriter statFile = new FileWriter("resources/stats.txt");
+            FileWriter statFile = new FileWriter(statPath);
             statFile.write(played + "\n");
             statFile.write(win + "\n");
             statFile.write(streak + "\n");
@@ -61,7 +63,7 @@ public class StatsWriter {
 
     public void getStatFromFile() {
         try {
-            File statFile = new File("resources/stats.txt");
+            File statFile = new File(statPath);
 
             if (statFile.createNewFile()) {
                 setup();
@@ -110,7 +112,7 @@ public class StatsWriter {
 
     private void setup() {
         try {
-            FileWriter statFile = new FileWriter("resources/stats.txt");
+            FileWriter statFile = new FileWriter(statPath);
             statFile.write(0 + "\n");
             statFile.write(0 + "\n");
             statFile.write(0 + "\n");

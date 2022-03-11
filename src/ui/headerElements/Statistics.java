@@ -22,7 +22,7 @@ public class Statistics extends JButton {
     public Statistics(TLModel model) {
         this.model = model;
         // Free Icon from Awesome Fonts
-        Icon icon = new ImageIcon("resources/icons/square-poll-vertical-solid-resized.png", "Statistics");
+        Icon icon = new ImageIcon("../resources/icons/square-poll-vertical-solid-resized.png", "Statistics");
         setBorder(new EmptyBorder(0, 0, 0, 0));
         setFocusable(false);
         setIcon(icon);

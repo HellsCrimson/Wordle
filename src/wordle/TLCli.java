@@ -1,9 +1,7 @@
 package wordle;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Scanner;
+import java.util.*;
+
 import cli.*;
 import keyboard.Key;
 import keyboard.States;
@@ -37,11 +35,12 @@ public class TLCli {
 
     public void startGame() {
         Scanner scan = new Scanner(System.in);
-        String userWord = "";
+        String userWord;
         clearScreen();
         int titleIndex = Title.getTitleIndex();
 
         while (!model.getWon() && !model.getLost()) {
+            clearScreen();
             printLine(Colors.RED + Title.getTitles()[titleIndex] + Colors.RESET);
             printGrid();
             printAvailableKeys();
@@ -54,7 +53,7 @@ public class TLCli {
             do {
                 print("Please enter a " + Colors.RED_UNDERLINED + "five" + Colors.RESET + " letter word: ");
                 userWord = scan.next();
-            } while (!userWord.matches("[a-zA-Z]{5}"));
+            } while (!userWord.matches("[a-zA-Z]{5}") || wrongLetterUsed(userWord));
             printLine("");
 
             if (userWord.equalsIgnoreCase("EPITA")) {
@@ -67,6 +66,7 @@ public class TLCli {
             model.addWordBuffer(model.getCurrentUserWord());
             model.keyPressed(new Key("ENTER", States.SPECIAL));
         }
+        clearScreen();
         printLine(Colors.RED + Title.getTitles()[titleIndex] + Colors.RESET);
         printGrid();
 
@@ -130,28 +130,26 @@ public class TLCli {
 
     private void printAvailableKeys() {
         printLine("");
+        notUsed.clear();
+        wrong.clear();
+        wrongPlace.clear();
+        right.clear();
         Key[][] keys = model.getKeyboard().getKeys();
         for (Key[] row : keys) {
             for (Key key : row) {
                 if (key != null) {
                     switch (key.getState()) {
                         case NOT_USED:
-                            if (!notUsed.contains(key.getLetter()))
-                                notUsed.add(key.getLetter());
+                            notUsed.add(key.getLetter());
                             break;
                         case WRONG_PLACE:
-                            if (!wrongPlace.contains(key.getLetter()))
-                                wrongPlace.add(key.getLetter());
+                            wrongPlace.add(key.getLetter());
                             break;
                         case WRONG:
-                            if (!wrong.contains(key.getLetter()))
-                                wrong.add(key.getLetter());
+                            wrong.add(key.getLetter());
                             break;
                         case RIGHT:
-                            notUsed.remove(key.getLetter());
-                            if (!right.contains(key.getLetter()))
-                                right.add(key.getLetter());
-                            wrongPlace.remove(key.getLetter());
+                            right.add(key.getLetter());
                             break;
                         case SPECIAL:
                             break;
@@ -200,33 +198,19 @@ public class TLCli {
         return letter + Colors.RESET;
     }
 
-    public void askFlags() {
-        Scanner scan = new Scanner(System.in);
-        model.setNeedBeValid(askFlag(scan, "Should a valid word be needed? (Yes/No) "));
-        model.setShowAnswer(askFlag(scan, "Should the valid word be shown? (Yes/No) "));
-        model.setIsFixedWord(askFlag(scan, "Should the word be set? (Yes/No) "));
+    public void askFlags(Scanner scan) {
+        model.setNeedBeValid(ask(scan, "Should a valid word be needed? (" + Colors.GREEN + "Yes" + Colors.RESET
+                + "/" + Colors.RED + "No" + Colors.RESET +") "));
+        model.setShowAnswer(ask(scan, "Should the valid word be shown? (" + Colors.GREEN + "Yes" + Colors.RESET
+                + "/" + Colors.RED + "No" + Colors.RESET +") "));
+        model.setIsFixedWord(ask(scan, "Should the word be set? (" + Colors.GREEN + "Yes" + Colors.RESET
+                + "/" + Colors.RED + "No" + Colors.RESET + ") "));
     }
 
-    private boolean askFlag(Scanner scan, String textAsked) {
+    public boolean ask(Scanner scan, String textAsked) {
         String response;
         while (true) {
             print(textAsked);
-            response = scan.next();
-            if ("YES".equalsIgnoreCase(response) ||
-                    "Y".equalsIgnoreCase(response)) {
-                return true;
-            } else if ("NO".equalsIgnoreCase(response) ||
-                    "N".equalsIgnoreCase(response)) {
-                return false;
-            }
-        }
-    }
-
-    public boolean askRestart() {
-        Scanner scan = new Scanner(System.in);
-        String response;
-        while (true) {
-            print("Do you want to restart? (Yes/No) ");
             response = scan.next();
             if ("YES".equalsIgnoreCase(response) ||
                     "Y".equalsIgnoreCase(response)) {
@@ -243,5 +227,15 @@ public class TLCli {
             Arrays.fill(row, -1);
         nbTries = 0;
         notUsed.clear();
+    }
+
+    public boolean wrongLetterUsed(String word) {
+        for (int i = 0; i < word.length(); i++) {
+            for (String wrongLetter : wrong) {
+                if (String.valueOf(word.charAt(i)).equalsIgnoreCase(wrongLetter))
+                    return true;
+            }
+        }
+        return false;
     }
 }

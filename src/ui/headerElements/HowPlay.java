@@ -21,7 +21,7 @@ public class HowPlay extends JButton {
 
     public HowPlay() {
         // Free Icon from Awesome Font
-        Icon icon = new ImageIcon("resources/icons/circle-question-regular-resized.png", "Question mark");
+        Icon icon = new ImageIcon("../resources/icons/circle-question-regular-resized.png", "Question mark");
         setBorder(new EmptyBorder(0, 0, 0, 0));
         setIcon(icon);
         setFocusable(false);
