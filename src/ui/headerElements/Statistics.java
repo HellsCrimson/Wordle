@@ -17,7 +17,8 @@ public class Statistics extends JButton {
     private int win;
     private int streak;
     private int maxStreak;
-    private int[] guesses = new int[6];;
+    private int[] guesses = new int[6];
+    ;
 
     public Statistics(TLModel model) {
         this.model = model;
@@ -70,7 +71,7 @@ public class Statistics extends JButton {
         stats.add(played, c);
         c.gridx++;
 
-        JTextField winRate = new JTextField("Win Rate " + (int)(safeDiv(this.win, this.played) * 100) + "%");
+        JTextField winRate = new JTextField("Win Rate " + (int) (safeDiv(this.win, this.played) * 100) + "%");
         setParameter(winRate);
         stats.add(winRate, c);
         c.gridx++;

@@ -2,9 +2,6 @@ package data;
 
 import org.junit.Test;
 
-import java.io.FileNotFoundException;
-import java.util.Arrays;
-
 import static org.junit.Assert.*;
 
 public class WordListTest {

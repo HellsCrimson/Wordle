@@ -1,7 +1,5 @@
 package data;
 
-import wordle.TLModel;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -18,6 +16,12 @@ public class StatsWriter {
     private int[] guesses;
 
     private String statPath = "../resources/stats.txt";
+
+    public StatsWriter() {
+        guesses = new int[6];
+        Arrays.fill(guesses, 0);
+        getStatFromFile();
+    }
 
     public int getPlayed() {
         return played;
@@ -37,12 +41,6 @@ public class StatsWriter {
 
     public int[] getGuesses() {
         return guesses;
-    }
-
-    public StatsWriter() {
-        guesses = new int[6];
-        Arrays.fill(guesses, 0);
-        getStatFromFile();
     }
 
     private void setStatInFile() {

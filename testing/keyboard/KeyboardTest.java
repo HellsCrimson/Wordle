@@ -3,8 +3,6 @@ package keyboard;
 import org.junit.Test;
 import wordle.TLModel;
 
-import java.util.Objects;
-
 import static org.junit.Assert.*;
 
 public class KeyboardTest {

@@ -1,20 +1,22 @@
 package wordle;
 
-import java.util.*;
-
-import cli.*;
+import cli.Colors;
+import cli.Title;
 import keyboard.Key;
 import keyboard.States;
 
-public class TLCli {
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Scanner;
 
-    private final TLModel model;
+public class TLCli {
 
     private static final String GRID_COLOR = Colors.RED_BRIGHT;
     private static final String WRONG_COLOR = Colors.WHITE;
     private static final String CORRECT_PLACE_COLOR = Colors.GREEN;
     private static final String CORRECT_COLOR = Colors.YELLOW;
-
+    private final TLModel model;
     private final ArrayList<String> notUsed = new ArrayList<>();
     private final ArrayList<String> wrong = new ArrayList<>();
     private final ArrayList<String> wrongPlace = new ArrayList<>();
@@ -194,9 +196,9 @@ public class TLCli {
 
     public void askFlags(Scanner scan) {
         model.setNeedBeValid(ask(scan, "Should a valid word be needed? (" + Colors.GREEN + "Yes" + Colors.RESET
-                + "/" + Colors.RED + "No" + Colors.RESET +") "));
+                + "/" + Colors.RED + "No" + Colors.RESET + ") "));
         model.setShowAnswer(ask(scan, "Should the valid word be shown? (" + Colors.GREEN + "Yes" + Colors.RESET
-                + "/" + Colors.RED + "No" + Colors.RESET +") "));
+                + "/" + Colors.RED + "No" + Colors.RESET + ") "));
         model.setIsFixedWord(ask(scan, "Should the word be set? (" + Colors.GREEN + "Yes" + Colors.RESET
                 + "/" + Colors.RED + "No" + Colors.RESET + ") "));
     }

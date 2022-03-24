@@ -5,20 +5,28 @@ import wordle.TLModel;
 public class Keyboard {
 
     private final TLModel model;
-
-    public boolean needLetter = false;
-    public boolean notValid = false;
-
-    private Key[][] keys;
-    private final String[][] keysAvalable = new String[][] {
+    private final String[][] keysAvalable = new String[][]{
             {"Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"},
             {"A", "S", "D", "F", "G", "H", "J", "K", "L"},
             {"ENTER", "Z", "X", "C", "V", "B", "N", "M", "DELETE"}
-    };;
+    };
+    public boolean needLetter = false;
+    public boolean notValid = false;
+    private Key[][] keys;
+    ;
 
-    public Key[][] getKeys() { return keys; }
+    public Keyboard(TLModel model) {
+        initKeyboard();
+        this.model = model;
+    }
 
-    /** Put all the keys in the correct state */
+    public Key[][] getKeys() {
+        return keys;
+    }
+
+    /**
+     * Put all the keys in the correct state
+     */
     private void initKeyboard() {
         keys = new Key[keysAvalable.length][getMaxRowKeys()];
         for (int y = 0; y < keysAvalable.length; y++) {
@@ -31,7 +39,9 @@ public class Keyboard {
         }
     }
 
-    /** Return the number of keys on the row with the most keys */
+    /**
+     * Return the number of keys on the row with the most keys
+     */
     public int getMaxRowKeys() {
         int max = 0;
         for (String[] strings : keysAvalable) {
@@ -123,7 +133,9 @@ public class Keyboard {
         }
     }
 
-    /** Put the keyboard like when it was created */
+    /**
+     * Put the keyboard like when it was created
+     */
     public void resetKeyboard() {
         for (Key[] row : keys) {
             for (Key key : row) {
@@ -132,10 +144,5 @@ public class Keyboard {
                 }
             }
         }
-    }
-
-    public Keyboard(TLModel model) {
-        initKeyboard();
-        this.model = model;
     }
 }

@@ -4,7 +4,9 @@ import java.util.Random;
 
 public class Colors {
 
-    /** All possible color from: https://stackoverflow.com/a/45444716 */
+    /**
+     * All possible color from: https://stackoverflow.com/a/45444716
+     */
 
     public static final String RESET = "\033[0m";  // Text Reset
 
@@ -79,7 +81,7 @@ public class Colors {
     public static final String WHITE_BACKGROUND_BRIGHT = "\033[0;107m";   // WHITE
 
     private static String[] colors = {BLACK, RED, GREEN, YELLOW, BLUE, PURPLE, CYAN
-    , WHITE};
+            , WHITE};
 
     public static String getRandomColor() {
         Random rng = new Random();

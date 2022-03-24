@@ -8,8 +8,8 @@ import java.util.Scanner;
 
 public class WordList {
 
-    public int length;
     private final String[] data;
+    public int length;
 
     public WordList(String filePath) {
         ArrayList<String> tmpData = new ArrayList<>();
@@ -27,21 +27,29 @@ public class WordList {
         length = data.length;
     }
 
-    public String[] getData() { return data; }
+    public String[] getData() {
+        return data;
+    }
 
-    /** Sort the array */
+    /**
+     * Sort the array
+     */
     public void sort() {
         Arrays.sort(data);
     }
 
-    /** Get the data at a certain index */
+    /**
+     * Get the data at a certain index
+     */
     public String dataAt(int index) {
         return data[index];
     }
 
-    /** Do a binary search to find the data
+    /**
+     * Do a binary search to find the data
      * If the data is found the index is returned
-     * Else the index where it is supposed to be is returned as a negative */
+     * Else the index where it is supposed to be is returned as a negative
+     */
     public int search(String toFind) {
         return Arrays.binarySearch(data, toFind);
     }

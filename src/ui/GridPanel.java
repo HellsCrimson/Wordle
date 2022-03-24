@@ -48,9 +48,11 @@ public class GridPanel extends JPanel {
         }
     }
 
-    /** Called at each update
+    /**
+     * Called at each update
      * Display the words of the index buffer
-     * When there are no more letters, go through the rest and put an empty word*/
+     * When there are no more letters, go through the rest and put an empty word
+     */
     public void displayWords() {
         int indexBuffer = model.indexBuffer + 1;
         if (indexBuffer > 6)
@@ -65,7 +67,9 @@ public class GridPanel extends JPanel {
         }
     }
 
-    /** Update the case of the letters with the correct color when a word is entered */
+    /**
+     * Update the case of the letters with the correct color when a word is entered
+     */
     public void colorGridBackground() {
         String[] correctLetters = model.getCorrectLetters();
         String[] correctPlaceLetters = model.getCorrectPlaceLetters();
@@ -83,8 +87,10 @@ public class GridPanel extends JPanel {
         colorLine(correctPlaceLetters, currIndex, Color.GREEN);
     }
 
-    /** Do the coloration for a single line with the color provided
-     * For the coloration use the letters of the array provided */
+    /**
+     * Do the coloration for a single line with the color provided
+     * For the coloration use the letters of the array provided
+     */
     private void colorLine(String[] correctLetters, int index, Color color) {
         for (int i = 0; i < correctLetters.length; i++) {
             if (correctLetters[i] != null) {

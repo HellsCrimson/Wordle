@@ -32,7 +32,9 @@ public class KeyboardPanel extends JPanel {
         addKeyboardElements();
     }
 
-    /** Add the two different panel of the keyboard together */
+    /**
+     * Add the two different panel of the keyboard together
+     */
     private void addKeyboardElements() {
         setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
@@ -40,18 +42,20 @@ public class KeyboardPanel extends JPanel {
         add(panelKeyboard10, constraints);
         constraints.gridy = 1;
         constraints.gridheight = 2;
-        constraints.insets = new Insets(PADDING,0,0,0);
+        constraints.insets = new Insets(PADDING, 0, 0, 0);
         add(panelKeyboard9, constraints);
     }
 
-    /** Create the keyboard (visual) according to the keyboard (which has the states)
-     * Each key has an action listener for the key press */
+    /**
+     * Create the keyboard (visual) according to the keyboard (which has the states)
+     * Each key has an action listener for the key press
+     */
     private void createKeyboard() {
         panelKeyboard10 = new JPanel();
-        panelKeyboard10.setLayout(new GridLayout(0,10, PADDING, PADDING));
+        panelKeyboard10.setLayout(new GridLayout(0, 10, PADDING, PADDING));
         panelKeyboard10.setPreferredSize(KEYBOARD_SIZE);
         panelKeyboard9 = new JPanel();
-        panelKeyboard9.setLayout(new GridLayout(0,9, PADDING, PADDING));
+        panelKeyboard9.setLayout(new GridLayout(0, 9, PADDING, PADDING));
         panelKeyboard9.setPreferredSize(new Dimension(KEYBOARD_SIZE.width, KEYBOARD_SIZE.height * 2));
 
         Keyboard kb = model.getKeyboard();
@@ -83,7 +87,9 @@ public class KeyboardPanel extends JPanel {
         }
     }
 
-    /** Go through the keys to update the color of the keys */
+    /**
+     * Go through the keys to update the color of the keys
+     */
     public void updateColorKeyboard() {
         for (int y = 0; y < keyboard.length; y++) {
             for (int x = 0; x < model.getKeyboard().getMaxRowKeys(); x++) {

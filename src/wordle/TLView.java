@@ -3,10 +3,10 @@ package wordle;
 import keyboard.KeyboardListener;
 import ui.*;
 
-import java.util.Observer;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.WindowEvent;
+import java.util.Observer;
 
 public class TLView implements Observer {
 
@@ -18,9 +18,7 @@ public class TLView implements Observer {
     private OptionPanel panelOption;
     private KeyboardPanel panelKeyboard;
 
-    public GridPanel getDisplayPanel() {return panelDisplay; }
-
-    public TLView(TLModel model, TLController controller)  {
+    public TLView(TLModel model, TLController controller) {
         // Load the CrossPlatformLook on mac
         /*try {
             UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName() );
@@ -36,8 +34,14 @@ public class TLView implements Observer {
         update(model, null);
     }
 
-    /** Create the different panels and add them to the frame
-     * as well as create the KeyboardListener to listen the keystrokes*/
+    public GridPanel getDisplayPanel() {
+        return panelDisplay;
+    }
+
+    /**
+     * Create the different panels and add them to the frame
+     * as well as create the KeyboardListener to listen the keystrokes
+     */
     public void createControls() {
         frame = new JFrame("Wordle");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -66,9 +70,11 @@ public class TLView implements Observer {
         frame.setVisible(true);
     }
 
-    /** Update called each time a key is pressed
+    /**
+     * Update called each time a key is pressed
      * call for the keyboard and grid color update
-     * and call a check for the different rules*/
+     * and call a check for the different rules
+     */
     public void update(java.util.Observable o, Object arg) {
         panelKeyboard.updateColorKeyboard();
 
@@ -94,7 +100,9 @@ public class TLView implements Observer {
         frame.repaint();
     }
 
-    /** Display a message dialog if there are less than 5 letters */
+    /**
+     * Display a message dialog if there are less than 5 letters
+     */
     private void checkNeedLetter() {
         if (model.getKeyboard().needLetter) {
             model.getKeyboard().needLetter = false;
@@ -105,7 +113,9 @@ public class TLView implements Observer {
         }
     }
 
-    /** Display a message dialog if the word is not valid */
+    /**
+     * Display a message dialog if the word is not valid
+     */
     private void checkNotValid() {
         if (model.getKeyboard().notValid) {
             model.getKeyboard().notValid = false;
@@ -116,16 +126,18 @@ public class TLView implements Observer {
         }
     }
 
-    /** Display a message dialog if the player won
+    /**
+     * Display a message dialog if the player won
      * Ask if the player want to do another game
-     * else close the game */
+     * else close the game
+     */
     private void checkWinner() {
         if (model.getWon()) {
             model.setWon(false);
             String[] optionButtons = {"Yes", "No"};
             int response = JOptionPane.showOptionDialog(frame,
                     "You won using " + model.indexBuffer + " attempt(s)\n"
-                    + "Do you want to do another game?",
+                            + "Do you want to do another game?",
                     "Winner",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
@@ -141,10 +153,12 @@ public class TLView implements Observer {
         }
     }
 
-    /** Display a message dialog if the player lost
+    /**
+     * Display a message dialog if the player lost
      * Display what was the correct word to find
      * Ask if the player want to do another game
-     * else close the game */
+     * else close the game
+     */
     private void checkLost() {
         if (model.getLost()) {
             model.setLost(false);

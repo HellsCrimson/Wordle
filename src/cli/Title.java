@@ -3,7 +3,9 @@ package cli;
 import java.util.Random;
 
 public class Title {
-    /** ASCII art provided by: https://patorjk.com/software/taag/ */
+    /**
+     * ASCII art provided by: https://patorjk.com/software/taag/
+     */
     private static final String title1 = """
                                                                                                              \s
              ___       __   ________  ________  ________  ___       _______                                  \s
@@ -72,7 +74,9 @@ public class Title {
 
     private static final String[] titles = {title1, title2, title3, title4, title5};
 
-    public static String[] getTitles() { return titles; }
+    public static String[] getTitles() {
+        return titles;
+    }
 
     public static int getTitleIndex() {
         Random rng = new Random();
