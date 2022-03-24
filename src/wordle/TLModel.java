@@ -35,6 +35,14 @@ public class TLModel extends Observable {
 
     public boolean restarting = false;
 
+    private boolean invariant() {
+        boolean invariant = won && lost;
+        invariant &= currentUserWord.length() <= wordToFind.length();
+        if (isFixedWord)
+            invariant &= !wordToFind.equals(getWordToFind());
+        return invariant;
+    }
+
     public TLModel() {
         initialise();
         setChanged();
@@ -60,6 +68,7 @@ public class TLModel extends Observable {
      * @pre. keyboard object is initialised
      * @post. is old keyboard with one key pressed */
     public void keyPressed(Key key) {
+        assert invariant();
         keyboard.KeyPressed(key);
         setChanged();
         notifyObservers();
@@ -68,6 +77,7 @@ public class TLModel extends Observable {
     /** Reset the attribute to be ready for another game
      * @pre. */
     public void restartGame() {
+        assert invariant();
         String oldWordToFind = getWordToFind();
 
         currentUserWord = "";
@@ -139,6 +149,7 @@ public class TLModel extends Observable {
     public void setIsFixedWord(boolean state) { isFixedWord = state; }
 
     public String getWordToFind() {
+        assert invariant();
         if (!isFixedWord)
             return wordToFind;
         return fixedWord;
@@ -153,6 +164,7 @@ public class TLModel extends Observable {
     /** Find a new word
      * Only call on startup cause call creation wordlist */
     private void findNewWord() {
+        assert invariant();
         loadWords();
         wordListAnswer.sort();
         possibleWord.sort();
@@ -162,6 +174,7 @@ public class TLModel extends Observable {
     /** Find a new word
      * Only call when the game has already started */
     private void changeWordToFind() {
+        assert invariant();
         wordToFind = wordListAnswer.dataAt(rng.nextInt(wordListAnswer.length));
     }
 
@@ -174,6 +187,7 @@ public class TLModel extends Observable {
 
     /** @param str is a 5 capital letter word */
     public boolean isValidWord(String str) {
+        assert invariant();
         assert str!=null:"the word to find must not be null";
 
         return (wordListAnswer.search(str) >= 0) || (possibleWord.search(str) >= 0);
@@ -184,6 +198,8 @@ public class TLModel extends Observable {
      * And Set an array with the letters that are in the correct place or null
      * The letters are in the place where they are in the correct word */
     public void correctLetters(String str) {
+        assert invariant();
+
         int[] histogram = new int[26];
         String[] correct = new String[getWordToFind().length()];
         String[] correctPlace = new String[getWordToFind().length()];
@@ -212,7 +228,9 @@ public class TLModel extends Observable {
 
     /** Reset the word buffer at the end of a game */
     public void resetWordBuffer() {
+        assert invariant();
         assert wordsBuffer!=null:"word buffer must be initialised";
+
         Arrays.fill(wordsBuffer, "");
         indexBuffer = 0;
     }

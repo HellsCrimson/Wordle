@@ -9,11 +9,11 @@ import static org.junit.Assert.*;
 public class TLModelTest {
 
     @Test
-    public void keyPressed() {
+    public void testKeyPressed() {
     }
 
     @Test
-    public void restartGame() {
+    public void testRestartGame() {
         TLModel model = new TLModel();
         model.addWordBuffer("test1");
         model.addWordBuffer("test2");
@@ -27,7 +27,7 @@ public class TLModelTest {
     }
 
     @Test
-    public void getWordsBuffer() {
+    public void testGetWordsBuffer() {
         TLModel model = new TLModel();
         String[] expected = new String[6];
         Arrays.fill(expected, "");
@@ -35,7 +35,7 @@ public class TLModelTest {
     }
 
     @Test
-    public void addWordBuffer() {
+    public void testAddWordBuffer() {
         TLModel model = new TLModel();
         model.addWordBuffer("test");
         String[] expected = new String[6];
@@ -45,15 +45,15 @@ public class TLModelTest {
     }
 
     @Test
-    public void changeEnterPressed() {
+    public void testChangeEnterPressed() {
     }
 
     @Test
-    public void correctLetters() {
+    public void testCorrectLetters() {
     }
 
     @Test
-    public void correctPlaceLettersAllTrue() {
+    public void testCorrectPlaceLettersAllTrue() {
         TLModel model = new TLModel();
         model.setCurrentUserWord(model.getWordToFind());
         model.correctLetters(model.getWordToFind());
@@ -66,30 +66,31 @@ public class TLModelTest {
     }
 
     @Test
-    public void correctPlaceLettersAllFalse() {
+    public void testCorrectPlaceLettersAllFalse() {
         TLModel model = new TLModel();
-        for (int i = 'a'; i <= 'z'; i++) {
-            if (model.getWordToFind().charAt(0) != i) {
-                String toTest = "";
-                for (int j = 0; j < 5; j++)
-                    toTest += String.valueOf((char)i);
-                model.setCurrentUserWord(toTest);
-                break;
+        String toTest = "";
+        for (int j = 0; j < model.getWordToFind().length(); j++) {
+            for (int i = 'A'; i <= 'Z'; i++) {
+                if (model.getWordToFind().charAt(j) != i) {
+                    toTest += String.valueOf((char) i);
+                    break;
+                }
             }
         }
+        model.setCurrentUserWord(toTest);
         model.correctLetters(model.getCurrentUserWord());
         String[] answer = model.getCorrectPlaceLetters();
 
         String[] expected = new String[answer.length];
-        assertArrayEquals(answer, expected);
+        assertArrayEquals(expected, answer);
     }
 
     @Test
-    public void addLetter() {
+    public void testAddLetter() {
     }
 
     @Test
-    public void resetWordBuffer() {
+    public void testResetWordBuffer() {
         TLModel model = new TLModel();
         Arrays.fill(model.getWordsBuffer(), "test");
         model.resetWordBuffer();

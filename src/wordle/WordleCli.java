@@ -18,6 +18,7 @@ public class WordleCli {
             cli.restart();
         } while (cli.ask(scan, "Do you want to restart? (" + Colors.GREEN + "Yes" + Colors.RESET
                 + "/" + Colors.RED + "No" + Colors.RESET + ") "));
+
         System.out.print("\033[H\033[2J"); // clear the terminal from the game
         System.out.flush();
     }

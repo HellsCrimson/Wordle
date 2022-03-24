@@ -21,7 +21,7 @@ public class TLCli {
     private final ArrayList<String> right = new ArrayList<>();
 
     private int[][] board;
-    private int nbTries;
+    private int nbTries = 0;
 
     private boolean ended = false;
 
@@ -30,7 +30,6 @@ public class TLCli {
         board = new int[6][6];
         for (int[] row : board)
             Arrays.fill(row, -1);
-        nbTries = 0;
     }
 
     public void startGame() {
@@ -55,11 +54,6 @@ public class TLCli {
                 userWord = scan.next();
             } while (!userWord.matches("[a-zA-Z]{5}") || wrongLetterUsed(userWord));
             printLine("");
-
-            if (userWord.equalsIgnoreCase("EPITA")) {
-                printLine(Title.getEasterEgg());
-                printLine("");
-            }
 
             nbTries++;
             model.setCurrentUserWord(userWord.toUpperCase());
