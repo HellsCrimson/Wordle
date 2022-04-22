@@ -293,10 +293,13 @@ public class TLModel extends Observable {
             if (histogram[str.charAt(i) - 65] != 0) {
                 if (str.charAt(i) == getWordToFind().charAt(i)) {
                     correctPlace[i] = String.valueOf(str.charAt(i));
-                } else {
-                    correct[i] = String.valueOf(str.charAt(i));
+                    histogram[str.charAt(i) - 65]--;
                 }
-                histogram[str.charAt(i) - 65]--;
+            }
+        }
+        for (int i = 0; i < str.length(); i++) {
+            if (histogram[str.charAt(i) - 65] != 0) {
+                correct[i] = String.valueOf(str.charAt(i));
             }
         }
 
