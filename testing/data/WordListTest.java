@@ -6,15 +6,17 @@ import static org.junit.Assert.*;
 
 public class WordListTest {
 
+    private final String path = "../resources/common.txt";
+
     @Test
     public void getData() {
-        WordList list = new WordList("../resources/common.txt");
+        WordList list = new WordList(path);
         assertEquals(2315, list.length);
     }
 
     @Test
     public void sort() {
-        WordList list = new WordList("../resources/common.txt");
+        WordList list = new WordList(path);
         list.sort();
         boolean sorted = true;
         int i = 0;
@@ -27,20 +29,20 @@ public class WordListTest {
 
     @Test
     public void dataAt() {
-        WordList list = new WordList("../resources/common.txt");
-        assertEquals(list.dataAt(0), "CIGAR");
+        WordList list = new WordList(path);
+        assertEquals("CIGAR", list.dataAt(0));
     }
 
     @Test
     public void searchTrue() {
-        WordList list = new WordList("../resources/common.txt");
+        WordList list = new WordList(path);
         list.sort();
         assertTrue(list.search("SPOOK") >= 0);
     }
 
     @Test
     public void searchFalse() {
-        WordList list = new WordList("../resources/common.txt");
+        WordList list = new WordList(path);
         assertFalse(list.search("SPOOKY") >= 0);
     }
 }

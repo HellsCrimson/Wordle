@@ -121,7 +121,7 @@ public class TLCli {
 
     private void winScreen() {
         printLine("");
-        printLine("You won! Using " + Colors.RED_UNDERLINED + model.indexBuffer + Colors.RESET + " attempt(s)");
+        printLine("You won! Using " + Colors.RED_UNDERLINED + model.getIndexBuffer() + Colors.RESET + " attempt(s)");
     }
 
     private void printAvailableKeys() {

@@ -54,7 +54,7 @@ public class GridPanel extends JPanel {
      * When there are no more letters, go through the rest and put an empty word
      */
     public void displayWords() {
-        int indexBuffer = model.indexBuffer + 1;
+        int indexBuffer = model.getIndexBuffer() + 1;
         if (indexBuffer > 6)
             indexBuffer = 6;
         for (int y = 0; y < indexBuffer; y++) {
@@ -74,7 +74,7 @@ public class GridPanel extends JPanel {
         String[] correctLetters = model.getCorrectLetters();
         String[] correctPlaceLetters = model.getCorrectPlaceLetters();
 
-        int currIndex = model.indexBuffer - 1; // index already + 1 at this point
+        int currIndex = model.getIndexBuffer() - 1; // index already + 1 at this point
         if (currIndex < 0)
             currIndex = 0;
 

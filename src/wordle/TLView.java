@@ -90,11 +90,11 @@ public class TLView implements Observer {
         checkWinner();
         checkLost();
 
-        if (model.restarting) {
+        if (model.isRestarting()) {
             panelDisplay.resetGrid();
             panelOption.refreshWord();
             panelOption.setRestartButton(false);
-            model.restarting = false;
+            model.setRestarting(false);
         }
 
         frame.repaint();
@@ -136,7 +136,7 @@ public class TLView implements Observer {
             model.setWon(false);
             String[] optionButtons = {"Yes", "No"};
             int response = JOptionPane.showOptionDialog(frame,
-                    "You won using " + model.indexBuffer + " attempt(s)\n"
+                    "You won using " + model.getIndexBuffer() + " attempt(s)\n"
                             + "Do you want to do another game?",
                     "Winner",
                     JOptionPane.YES_NO_OPTION,

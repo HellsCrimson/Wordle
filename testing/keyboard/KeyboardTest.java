@@ -16,7 +16,7 @@ public class KeyboardTest {
     @Test
     public void getMaxRowKeys() {
         Keyboard kb = new Keyboard(new TLModel());
-        assertEquals(kb.getMaxRowKeys(), 10);
+        assertEquals(10, kb.getMaxRowKeys());
     }
 
     @Test
@@ -33,7 +33,7 @@ public class KeyboardTest {
         Keyboard kb = new Keyboard(model);
         kb.KeyPressed(new Key("Q"));
         kb.KeyPressed(new Key("DELETE"));
-        assertTrue(model.getCurrentUserWord().length() == 0);
+        assertEquals(0, model.getCurrentUserWord().length());
     }
 
     @Test
@@ -49,6 +49,6 @@ public class KeyboardTest {
         }
         kb.resetKeyboard();
 
-        assertArrayEquals(kb.getKeys(), expected);
+        assertArrayEquals(expected, kb.getKeys());
     }
 }

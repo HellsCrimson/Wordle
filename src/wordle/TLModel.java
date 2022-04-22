@@ -12,8 +12,8 @@ import java.util.Random;
 public class TLModel extends Observable {
 
     private static final String fixedWord = "ROGER";
-    public int indexBuffer;
-    public boolean restarting = false;
+    private int indexBuffer;
+    private boolean restarting = false;
     private Keyboard keyboard;
     private StatsWriter statsWriter;
     private boolean won = false;
@@ -38,7 +38,7 @@ public class TLModel extends Observable {
     }
 
     private boolean invariant() {
-        boolean invariant = won && lost;
+        boolean invariant = !(won && lost);
         invariant &= currentUserWord.length() <= wordToFind.length();
         if (isFixedWord)
             invariant &= !wordToFind.equals(getWordToFind());
@@ -56,7 +56,7 @@ public class TLModel extends Observable {
         currentUserWord = "";
         wordsBuffer = new String[6];
         Arrays.fill(wordsBuffer, "");
-        resetWordBuffer();
+        setIndexBuffer(0);
         getRandom();
         findNewWord();
         statsWriter = new StatsWriter();
@@ -71,6 +71,8 @@ public class TLModel extends Observable {
      */
     public void keyPressed(Key key) {
         assert invariant();
+        assert keyboard != null;
+
         keyboard.KeyPressed(key);
         setChanged();
         notifyObservers();
@@ -79,10 +81,12 @@ public class TLModel extends Observable {
     /**
      * Reset the attribute to be ready for another game
      *
-     * @pre.
+     * @pre. a game was already started
+     * @post. the model like in the first init
      */
     public void restartGame() {
         assert invariant();
+
         String oldWordToFind = getWordToFind();
 
         currentUserWord = "";
@@ -94,10 +98,17 @@ public class TLModel extends Observable {
         lost = false;
 
         assert !oldWordToFind.equals(wordToFind) || isFixedWord() : "word must have changed or the word is set";
+        assert invariant();
 
         setChanged();
         notifyObservers();
     }
+
+    public int getIndexBuffer() {
+        return indexBuffer;
+    }
+
+    public void setIndexBuffer(int number) { indexBuffer = number; }
 
     public boolean getWon() {
         return won;
@@ -144,10 +155,12 @@ public class TLModel extends Observable {
     }
 
     public void addWordBuffer(String word) {
-        wordsBuffer[indexBuffer] = word;
+        wordsBuffer[getIndexBuffer()] = word;
     }
 
     public Keyboard getKeyboard() {
+        assert keyboard != null;
+
         return keyboard;
     }
 
@@ -176,7 +189,6 @@ public class TLModel extends Observable {
     }
 
     public String getWordToFind() {
-        assert invariant();
         if (!isFixedWord)
             return wordToFind;
         return fixedWord;
@@ -187,6 +199,8 @@ public class TLModel extends Observable {
     }
 
     public void setCurrentUserWord(String str) {
+        assert str != null;
+
         currentUserWord = str.toUpperCase();
     }
 
@@ -197,37 +211,60 @@ public class TLModel extends Observable {
     /**
      * Find a new word
      * Only call on startup cause call creation wordlist
+     *
+     * @pre. nothing
+     * @post. two list loaded and word to find selected
      */
     private void findNewWord() {
-        assert invariant();
         loadWords();
         wordListAnswer.sort();
         possibleWord.sort();
         wordToFind = wordListAnswer.dataAt(rng.nextInt(wordListAnswer.length));
+
+        assert wordToFind != null;
     }
 
     /**
      * Find a new word
      * Only call when the game has already started
+     *
+     * @pre. two list of word already initialized
+     * @post. old word to find != new word to find
      */
     private void changeWordToFind() {
         assert invariant();
-        wordToFind = wordListAnswer.dataAt(rng.nextInt(wordListAnswer.length));
+        String oldWordToFind = wordToFind;
+
+        do {
+            wordToFind = wordListAnswer.dataAt(rng.nextInt(wordListAnswer.length));
+        } while (oldWordToFind.equalsIgnoreCase(wordToFind));
+
+        assert !oldWordToFind.equalsIgnoreCase(wordToFind);
     }
 
+    /**
+     * Load the words in WordList object
+     *
+     * @pre. nothing
+     * @post. objects initialized
+     */
     private void loadWords() {
         wordListAnswer = new WordList("../resources/common.txt");
         possibleWord = new WordList("../resources/words.txt");
 
-        assert wordListAnswer != null && possibleWord != null : "both data structure must be loaded (not null)";
+        assert (wordListAnswer != null) && (possibleWord != null) : "both data structure must be loaded";
     }
 
     /**
-     * @param str is a 5 capital letter word
+     * Look if the word is in one of the list
+     *
+     * @pre. str is not null
+     * @post. nothing
      */
     public boolean isValidWord(String str) {
         assert invariant();
         assert str != null : "the word to find must not be null";
+        assert wordListAnswer != null && possibleWord != null;
 
         return (wordListAnswer.search(str) >= 0) || (possibleWord.search(str) >= 0);
     }
@@ -237,9 +274,13 @@ public class TLModel extends Observable {
      * Set an array with the letters that are correct or null
      * And Set an array with the letters that are in the correct place or null
      * The letters are in the place where they are in the correct word
+     *
+     * @pre. str is not null
+     * @post. the two array contain the letters && the letters are not at the same index
      */
     public void correctLetters(String str) {
         assert invariant();
+        assert str != null;
 
         int[] histogram = new int[26];
         String[] correct = new String[getWordToFind().length()];
@@ -261,28 +302,48 @@ public class TLModel extends Observable {
 
         correctLetters = correct;
         correctPlaceLetters = correctPlace;
+
+        assert correctLetters != null;
+        assert correctPlaceLetters != null;
     }
 
     public boolean isCorrectWord(String str) {
+        assert str != null && getWordToFind() != null;
+
         return str.equals(getWordToFind());
     }
 
     public void addLetter(String character) {
+        assert currentUserWord.length() < 6;
+
         currentUserWord += character;
     }
 
     /**
      * Reset the word buffer at the end of a game
+     *
+     * @pre. wordBuffer is already initialized
+     * @post. wordBuffer full of empty word @@ index of buffer at 0
      */
     public void resetWordBuffer() {
         assert invariant();
         assert wordsBuffer != null : "word buffer must be initialised";
 
         Arrays.fill(wordsBuffer, "");
-        indexBuffer = 0;
+        setIndexBuffer(0);
     }
 
     public StatsWriter getStatWriter() {
+        assert statsWriter != null;
+
         return statsWriter;
+    }
+
+    public boolean isRestarting() {
+        return restarting;
+    }
+
+    public void setRestarting(boolean restarting) {
+        this.restarting = restarting;
     }
 }

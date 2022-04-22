@@ -56,31 +56,8 @@ public class Keyboard {
             String userWord = model.getCurrentUserWord();
             if (userWord.length() == 5) {
                 if (model.isValidWord(userWord) || !model.getNeedBeValid()) {
-                    model.correctLetters(userWord);
-                    String[] correctLetters = model.getCorrectLetters();
-                    String[] correctPlaceLetters = model.getCorrectPlaceLetters();
-                    for (String correctLetter : correctLetters) {
-                        changeKeyState(correctLetter, States.WRONG_PLACE);
-                    }
-                    for (String correctLetter : correctPlaceLetters) {
-                        changeKeyState(correctLetter, States.RIGHT);
-                    }
-
-                    setRemainingWrongs(correctLetters, correctPlaceLetters);
-
-                    if (model.isCorrectWord(userWord)) {
-                        model.setWon(true);
-                        model.getStatWriter().addData(true, model.indexBuffer);
-                    }
-
-                    model.setCurrentUserWord("");
-                    model.changeEnterPressed();
-                    model.indexBuffer += 1;
-
-                    if (!model.getWon() && model.indexBuffer == 6) {
-                        model.getStatWriter().addData(false, -1);
-                        model.setLost(true);
-                    }
+                    // a valid word
+                    wordValid(userWord);
                 } else {
                     // not a valid word
                     notValid = true;
@@ -90,16 +67,52 @@ public class Keyboard {
                 needLetter = true;
             }
         } else if (key.getLetter().equals("DELETE")) {
-            String userWord = model.getCurrentUserWord();
-            if (userWord.length() > 0) {
-                model.setCurrentUserWord(userWord.substring(0, userWord.length() - 1));
-                model.getWordsBuffer()[model.indexBuffer] = model.getCurrentUserWord();
-            }
+            deleteLetter();
         } else {
-            if (model.getCurrentUserWord().length() < 5) {
-                model.getWordsBuffer()[model.indexBuffer] = model.getCurrentUserWord() + key.getLetter();
-                model.addLetter(key.getLetter());
-            }
+            letterAdded(key);
+        }
+    }
+
+    private void letterAdded(Key key) {
+        if (model.getCurrentUserWord().length() < 5) {
+            model.getWordsBuffer()[model.getIndexBuffer()] = model.getCurrentUserWord() + key.getLetter();
+            model.addLetter(key.getLetter());
+        }
+    }
+
+    private void deleteLetter() {
+        String userWord = model.getCurrentUserWord();
+        if (userWord.length() > 0) {
+            model.setCurrentUserWord(userWord.substring(0, userWord.length() - 1));
+            model.getWordsBuffer()[model.getIndexBuffer()] = model.getCurrentUserWord();
+        }
+    }
+
+    private void wordValid(String userWord) {
+        model.correctLetters(userWord);
+        String[] correctLetters = model.getCorrectLetters();
+        String[] correctPlaceLetters = model.getCorrectPlaceLetters();
+        for (String correctLetter : correctLetters) {
+            changeKeyState(correctLetter, States.WRONG_PLACE);
+        }
+        for (String correctLetter : correctPlaceLetters) {
+            changeKeyState(correctLetter, States.RIGHT);
+        }
+
+        setRemainingWrongs(correctLetters, correctPlaceLetters);
+
+        if (model.isCorrectWord(userWord)) {
+            model.setWon(true);
+            model.getStatWriter().addData(true, model.getIndexBuffer());
+        }
+
+        model.setCurrentUserWord("");
+        model.changeEnterPressed();
+        model.setIndexBuffer(model.getIndexBuffer() + 1);
+
+        if (!model.getWon() && model.getIndexBuffer() == 6) {
+            model.getStatWriter().addData(false, -1);
+            model.setLost(true);
         }
     }
 
